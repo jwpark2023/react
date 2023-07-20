@@ -1,0 +1,257 @@
+{
+  "code": "S0000001",
+  "message": "success",
+  "recordsTotal": 0,
+  "dataSet": [
+    {
+      "lvl": 0,
+      "rootId": "0000000",
+      "menuId": "0000000",
+      "menuNm": "Home",
+      "icon": "cui-home",
+      "isTitle": 1,
+      "children": [
+        {
+          "lvl": 1,
+          "rootId": "0000000",
+          "menuId": "1000037",
+          "pMenuId": "0000000",
+          "menuNm": "Kafka",
+          "baseUrl": "/kafka",
+          "sortOd": 1,
+          "icon": "icon-folder",
+          "isTitle": 1,
+          "children": [
+            {
+              "lvl": 2,
+              "rootId": "0000000",
+              "menuId": "1000038",
+              "pMenuId": "1000037",
+              "menuNm": "event",
+              "baseUrl": "/kafka",
+              "icon": "cui-check",
+              "isTitle": 1,
+              "children": [
+                {
+                  "lvl": 3,
+                  "rootId": "0000000",
+                  "menuId": "1000030",
+                  "pMenuId": "1000038",
+                  "menuNm": "publish",
+                  "baseUrl": "/kafka/publish",
+                  "sortOd": 1,
+                  "icon": "cui-check",
+                  "isTitle": 0,
+                  "children": [],
+                  "childSize": 0
+                },
+                {
+                  "lvl": 3,
+                  "rootId": "0000000",
+                  "menuId": "1000035",
+                  "pMenuId": "1000038",
+                  "menuNm": "consumer",
+                  "baseUrl": "/kafka/consumer",
+                  "sortOd": 2,
+                  "icon": "cui-check",
+                  "isTitle": 0,
+                  "children": [],
+                  "childSize": 0
+                }
+              ],
+              "childSize": 2
+            },
+            {
+              "lvl": 2,
+              "rootId": "0000000",
+              "menuId": "1000034",
+              "pMenuId": "1000037",
+              "menuNm": "streams",
+              "baseUrl": "/kafka/streams",
+              "sortOd": 4,
+              "icon": "cui-check",
+              "isTitle": 1,
+              "children": [],
+              "childSize": 0
+            }
+          ],
+          "childSize": 2
+        },
+        {
+          "lvl": 1,
+          "rootId": "0000000",
+          "menuId": "S000002",
+          "pMenuId": "0000000",
+          "menuNm": "sample",
+          "baseUrl": "/task/main",
+          "sortOd": 2,
+          "icon": "icon-folder",
+          "isTitle": 1,
+          "children": [],
+          "childSize": 0
+        },
+        {
+          "lvl": 1,
+          "rootId": "0000000",
+          "menuId": "S000001",
+          "pMenuId": "0000000",
+          "menuNm": "환경설정",
+          "baseUrl": "/setting",
+          "sortOd": 3,
+          "icon": "icon-folder",
+          "isTitle": 1,
+          "children": [
+            {
+              "lvl": 2,
+              "rootId": "0000000",
+              "menuId": "1000005",
+              "pMenuId": "S000001",
+              "menuNm": "관리자설정",
+              "baseUrl": "/setting",
+              "sortOd": 1,
+              "icon": "icon-folder",
+              "isTitle": 1,
+              "children": [
+                {
+                  "lvl": 3,
+                  "rootId": "0000000",
+                  "menuId": "1000004",
+                  "pMenuId": "1000005",
+                  "menuNm": "사용자관리",
+                  "baseUrl": "/setting/users",
+                  "sortOd": 1,
+                  "icon": "cui-check",
+                  "isTitle": 0,
+                  "children": [],
+                  "childSize": 0
+                },
+                {
+                  "lvl": 3,
+                  "rootId": "0000000",
+                  "menuId": "1000003",
+                  "pMenuId": "1000005",
+                  "menuNm": "공통코드관리",
+                  "baseUrl": "/setting/code",
+                  "sortOd": 2,
+                  "icon": "cui-check",
+                  "isTitle": 0,
+                  "children": [],
+                  "childSize": 0
+                },
+                {
+                  "lvl": 3,
+                  "rootId": "0000000",
+                  "menuId": "1000032",
+                  "pMenuId": "1000005",
+                  "menuNm": "메시지관리",
+                  "baseUrl": "/setting/message",
+                  "sortOd": 3,
+                  "icon": "cui-check",
+                  "isTitle": 0,
+                  "children": [],
+                  "childSize": 0
+                },
+                {
+                  "lvl": 3,
+                  "rootId": "0000000",
+                  "menuId": "1000009",
+                  "pMenuId": "1000005",
+                  "menuNm": "소스관리",
+                  "baseUrl": "/setting/sys",
+                  "sortOd": 4,
+                  "icon": "cui-check",
+                  "isTitle": 0,
+                  "children": [],
+                  "childSize": 0
+                }
+              ],
+              "childSize": 4
+            },
+            {
+              "lvl": 2,
+              "rootId": "0000000",
+              "menuId": "1000001",
+              "pMenuId": "S000001",
+              "menuNm": "메뉴권한",
+              "baseUrl": "",
+              "sortOd": 2,
+              "icon": "icon-folder",
+              "isTitle": 1,
+              "children": [
+                {
+                  "lvl": 3,
+                  "rootId": "0000000",
+                  "menuId": "1000002",
+                  "pMenuId": "1000001",
+                  "menuNm": "메뉴관리",
+                  "baseUrl": "/setting/menu",
+                  "sortOd": 1,
+                  "icon": "cui-check",
+                  "isTitle": 0,
+                  "children": [],
+                  "childSize": 0
+                },
+                {
+                  "lvl": 3,
+                  "rootId": "0000000",
+                  "menuId": "1000007",
+                  "pMenuId": "1000001",
+                  "menuNm": "그룹권한",
+                  "baseUrl": "/setting/group-auth",
+                  "sortOd": 2,
+                  "icon": "cui-check",
+                  "isTitle": 0,
+                  "children": [],
+                  "childSize": 0
+                },
+                {
+                  "lvl": 3,
+                  "rootId": "0000000",
+                  "menuId": "1000006",
+                  "pMenuId": "1000001",
+                  "menuNm": "프로그램관리",
+                  "baseUrl": "/setting",
+                  "sortOd": 3,
+                  "icon": "cui-check",
+                  "isTitle": 0,
+                  "children": [],
+                  "childSize": 0
+                }
+              ],
+              "childSize": 3
+            },
+            {
+              "lvl": 2,
+              "rootId": "0000000",
+              "menuId": "S000003",
+              "pMenuId": "S000001",
+              "menuNm": "Sample",
+              "baseUrl": "/smp",
+              "sortOd": 3,
+              "icon": "icon-folder",
+              "isTitle": 1,
+              "children": [
+                {
+                  "lvl": 3,
+                  "rootId": "0000000",
+                  "menuId": "1000015",
+                  "pMenuId": "S000003",
+                  "menuNm": "Grid",
+                  "baseUrl": "/slickgrid",
+                  "sortOd": 1,
+                  "icon": "cui-check",
+                  "isTitle": 0,
+                  "children": [],
+                  "childSize": 0
+                }
+              ],
+              "childSize": 1
+            }
+          ],
+          "childSize": 3
+        }
+      ],
+      "childSize": 3
+    }
+  ]
+}
