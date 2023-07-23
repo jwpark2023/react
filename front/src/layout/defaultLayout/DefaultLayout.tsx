@@ -33,13 +33,12 @@ const DefaultLayout = (props: any) => {
         <main className="main">
           <Breadcrumb />
           <Container fluid>
-            {/* Stack the columns on mobile by making one full-width and the other half-width */}
             <Suspense fallback={loading()}>
               <Routes>
                 {routes.map((route, idx) => {
                   return route.component ? (
                     <Route
-                      key={idx}
+                      key={route.path}
                       path={route.path}
                       element={<route.component {...props} />}
                     />
