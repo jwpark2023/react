@@ -1,0 +1,8 @@
+DROP TABLE IF EXISTS USER_MST;
+CREATE TABLE USER_MST
+(
+    username   VARCHAR(255),
+    password VARCHAR(255) NOT NULL,
+    email    VARCHAR(255),
+    PRIMARY KEY (username)
+);
