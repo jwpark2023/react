@@ -1,6 +1,5 @@
 package com.react.frw.auth.vo;
 
-import javax.persistence.Entity;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
