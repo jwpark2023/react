@@ -12,6 +12,6 @@
         FROM 
             user_mst 
         WHERE 
-            username = #{username,jdbcType=VARCHAR} 
+            username = #{username} 
     </select>
 </mapper>
