@@ -8,7 +8,6 @@
       "rootId": "0000000",
       "menuId": "0000000",
       "menuNm": "Home",
-      "icon": "cui-home",
       "isTitle": 1,
       "children": [
         {
@@ -19,7 +18,6 @@
           "menuNm": "Intro",
           "baseUrl": "/dashboard",
           "sortOd": 1,
-          "icon": "icon-folder",
           "isTitle": 1,
           "children": [
             {
@@ -29,7 +27,6 @@
               "pMenuId": "1000037",
               "menuNm": "Dashboard",
               "baseUrl": "/dashboard",
-              "icon": "cui-check",
               "isTitle": 1,
               "children": [
                 {
@@ -40,10 +37,8 @@
                   "menuNm": "Main",
                   "baseUrl": "/dashboard",
                   "sortOd": 1,
-                  "icon": "cui-check",
                   "isTitle": 0,
-                  "children": [],
-                  "childSize": 0
+                  "children": []
                 },
                 {
                   "lvl": 3,
@@ -53,13 +48,10 @@
                   "menuNm": "Page One",
                   "baseUrl": "/page111",
                   "sortOd": 2,
-                  "icon": "cui-check",
                   "isTitle": 0,
-                  "children": [],
-                  "childSize": 0
+                  "children": []
                 }
-              ],
-              "childSize": 2
+              ]
             },
             {
               "lvl": 2,
@@ -85,10 +77,8 @@
           "menuNm": "sample",
           "baseUrl": "/page111",
           "sortOd": 2,
-          "icon": "icon-folder",
           "isTitle": 1,
-          "children": [],
-          "childSize": 0
+          "children": []
         },
         {
           "lvl": 1,
@@ -102,156 +92,30 @@
           "isTitle": 1,
           "children": [
             {
-              "lvl": 2,
+              "lvl": 3,
               "rootId": "0000000",
-              "menuId": "1000005",
-              "pMenuId": "S000001",
-              "menuNm": "관리자설정",
-              "baseUrl": "/setting",
+              "menuId": "S0000011",
+              "pMenuId": "1000038",
+              "menuNm": "Main",
+              "baseUrl": "/dashboard",
               "sortOd": 1,
-              "icon": "icon-folder",
-              "isTitle": 1,
-              "children": [
-                {
-                  "lvl": 3,
-                  "rootId": "0000000",
-                  "menuId": "1000004",
-                  "pMenuId": "1000005",
-                  "menuNm": "사용자관리",
-                  "baseUrl": "/setting/users",
-                  "sortOd": 1,
-                  "icon": "cui-check",
-                  "isTitle": 0,
-                  "children": [],
-                  "childSize": 0
-                },
-                {
-                  "lvl": 3,
-                  "rootId": "0000000",
-                  "menuId": "1000003",
-                  "pMenuId": "1000005",
-                  "menuNm": "공통코드관리",
-                  "baseUrl": "/setting/code",
-                  "sortOd": 2,
-                  "icon": "cui-check",
-                  "isTitle": 0,
-                  "children": [],
-                  "childSize": 0
-                },
-                {
-                  "lvl": 3,
-                  "rootId": "0000000",
-                  "menuId": "1000032",
-                  "pMenuId": "1000005",
-                  "menuNm": "메시지관리",
-                  "baseUrl": "/setting/message",
-                  "sortOd": 3,
-                  "icon": "cui-check",
-                  "isTitle": 0,
-                  "children": [],
-                  "childSize": 0
-                },
-                {
-                  "lvl": 3,
-                  "rootId": "0000000",
-                  "menuId": "1000009",
-                  "pMenuId": "1000005",
-                  "menuNm": "소스관리",
-                  "baseUrl": "/setting/sys",
-                  "sortOd": 4,
-                  "icon": "cui-check",
-                  "isTitle": 0,
-                  "children": [],
-                  "childSize": 0
-                }
-              ],
-              "childSize": 4
+              "isTitle": 0,
+              "children": []
             },
             {
-              "lvl": 2,
+              "lvl": 3,
               "rootId": "0000000",
-              "menuId": "1000001",
-              "pMenuId": "S000001",
-              "menuNm": "메뉴권한",
-              "baseUrl": "",
+              "menuId": "S0000012",
+              "pMenuId": "1000038",
+              "menuNm": "Page One",
+              "baseUrl": "/page111",
               "sortOd": 2,
-              "icon": "icon-folder",
-              "isTitle": 1,
-              "children": [
-                {
-                  "lvl": 3,
-                  "rootId": "0000000",
-                  "menuId": "1000002",
-                  "pMenuId": "1000001",
-                  "menuNm": "메뉴관리",
-                  "baseUrl": "/setting/menu",
-                  "sortOd": 1,
-                  "icon": "cui-check",
-                  "isTitle": 0,
-                  "children": [],
-                  "childSize": 0
-                },
-                {
-                  "lvl": 3,
-                  "rootId": "0000000",
-                  "menuId": "1000007",
-                  "pMenuId": "1000001",
-                  "menuNm": "그룹권한",
-                  "baseUrl": "/setting/group-auth",
-                  "sortOd": 2,
-                  "icon": "cui-check",
-                  "isTitle": 0,
-                  "children": [],
-                  "childSize": 0
-                },
-                {
-                  "lvl": 3,
-                  "rootId": "0000000",
-                  "menuId": "1000006",
-                  "pMenuId": "1000001",
-                  "menuNm": "프로그램관리",
-                  "baseUrl": "/setting",
-                  "sortOd": 3,
-                  "icon": "cui-check",
-                  "isTitle": 0,
-                  "children": [],
-                  "childSize": 0
-                }
-              ],
-              "childSize": 3
-            },
-            {
-              "lvl": 2,
-              "rootId": "0000000",
-              "menuId": "S000003",
-              "pMenuId": "S000001",
-              "menuNm": "Sample",
-              "baseUrl": "/smp",
-              "sortOd": 3,
-              "icon": "icon-folder",
-              "isTitle": 1,
-              "children": [
-                {
-                  "lvl": 3,
-                  "rootId": "0000000",
-                  "menuId": "1000015",
-                  "pMenuId": "S000003",
-                  "menuNm": "Grid",
-                  "baseUrl": "/slickgrid",
-                  "sortOd": 1,
-                  "icon": "cui-check",
-                  "isTitle": 0,
-                  "children": [],
-                  "childSize": 0
-                }
-              ],
-              "childSize": 1
+              "isTitle": 0,
+              "children": []
             }
-          ],
-          "childSize": 3
+          ]
         }
-      ],
-      "childSize": 3
+      ]
     }
   ]
 }

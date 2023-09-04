@@ -27,19 +27,19 @@ const HeaderTop = () => {
           </Link>
         ),
         key: menu.menuId,
-        children: menu.children?.map((subMenu: any) => ({
-          label: (
-            <Link className="nav-link" to={subMenu.baseUrl}>
-              {subMenu.menuNm}
-            </Link>
-          ),
-          key: subMenu.menuId,
-        })),
+        children: menu.children?.map((subMenu: any) => {
+          console.log("subMenu: ", subMenu);
+          return {
+            label: (
+              <Link className="nav-link" to={subMenu.baseUrl}>
+                {subMenu.menuNm}
+              </Link>
+            ),
+            key: subMenu.menuId,
+          };
+        }),
       })
     );
-
-    menuItem.push({ type: "divider" });
-
     setMenus(menuItem);
   }, []);
 
@@ -49,7 +49,7 @@ const HeaderTop = () => {
   };
 
   return (
-    <div className="row w-100 h-50" style={styles.header}>
+    <div style={styles.header}>
       <a href="/">
         <img
           src="images/logo.svg"
@@ -132,6 +132,8 @@ export default HeaderTop;
 
 const styles = {
   header: {
-    backgroundColor: "#000",
+    display: "flex",
+    minWidth: 0,
+    flex: "auto",
   },
 };
