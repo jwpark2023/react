@@ -35,7 +35,7 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
 
       log.debug("jwt:; {}", jwt);
 
-      if (jwt != null) {
+      if (jwt != null && !"null".equals(jwt)) {
         if (!tokenProvider.validateJwtToken(jwt)) {
           response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT token");
           return;

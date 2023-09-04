@@ -5,12 +5,13 @@ import React, {
   useMemo,
   useCallback,
 } from "react";
-import { createRoot } from "react-dom/client";
 import { AgGridReact } from "ag-grid-react"; // the AG Grid React Component
 
 import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import { ColDef } from "ag-grid-community";
+
+import { request } from "src/utils/axios";
 
 const Grid = () => {
   interface ICar {
@@ -44,6 +45,10 @@ const Grid = () => {
 
   // Example load data from server
   useEffect(() => {
+    const data = request("get", "/sample/userList", null);
+    console.log("userList: ", data);
+    //setRowData(rowData);
+
     fetch("https://www.ag-grid.com/example-assets/row-data.json")
       .then((result) => result.json())
       .then((rowData) => setRowData(rowData));

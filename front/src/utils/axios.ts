@@ -32,6 +32,7 @@ axios.interceptors.response.use(
 );
 
 export const request = (method: any, url: string, data: any) => {
+  console.log("URL:", DOMAIN + url);
   return axios({
     method,
     url: DOMAIN + url,
