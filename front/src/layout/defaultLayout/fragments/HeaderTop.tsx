@@ -1,8 +1,55 @@
+import type { MenuProps } from "antd";
+import { Menu } from "antd";
+
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import menu from "src/data/menu.json";
+
 const HeaderTop = () => {
   const logout = () => {};
 
+  const [current, setCurrent] = useState("mail");
+
+  const [menus, setMenus] = useState<MenuProps["items"]>([]);
+
+  const dispatch: any = useDispatch();
+
+  useEffect(() => {
+    console.log("HeaderTop useEffect: ", menu.dataSet[0].children);
+    const menuItem: MenuProps["items"] = [];
+
+    menu.dataSet[0].children?.forEach((menu: any, idx: number) =>
+      menuItem.push({
+        label: (
+          <Link className="nav-link" to={menu.baseUrl}>
+            {menu.menuNm}
+          </Link>
+        ),
+        key: menu.menuId,
+        children: menu.children?.map((subMenu: any) => ({
+          label: (
+            <Link className="nav-link" to={subMenu.baseUrl}>
+              {subMenu.menuNm}
+            </Link>
+          ),
+          key: subMenu.menuId,
+        })),
+      })
+    );
+
+    menuItem.push({ type: "divider" });
+
+    setMenus(menuItem);
+  }, []);
+
+  const onClick: MenuProps["onClick"] = (e) => {
+    console.log("click ", e);
+    setCurrent(e.key);
+  };
+
   return (
-    <div className="row m-0 p-0 w-100 h-50" style={styles.header}>
+    <div className="row w-100 h-50" style={styles.header}>
       <a href="/">
         <img
           src="images/logo.svg"
@@ -11,7 +58,14 @@ const HeaderTop = () => {
           alt="logo"
         />
       </a>
-      <h2>React TS admin</h2>
+      <Menu
+        onClick={onClick}
+        className="row w-80 h-50"
+        style={styles.header}
+        selectedKeys={[current]}
+        mode="horizontal"
+        items={menus}
+      />
       <ul className="nav navbar-nav ml-auto">
         <li className="nav-item d-md-down-none">
           <div className="nav-link" style={{ cursor: "pointer" }}>
@@ -70,20 +124,6 @@ const HeaderTop = () => {
           </div>
         </li>
       </ul>
-      <button
-        id="lg-aside-menu"
-        className="navbar-toggler aside-menu-toggler d-md-down-none"
-        type="button"
-      >
-        <span className="navbar-toggler-icon"></span>
-      </button>
-      <button
-        id="md-aside-menu"
-        className="navbar-toggler aside-menu-toggler d-lg-none"
-        type="button"
-      >
-        <span className="navbar-toggler-icon"></span>
-      </button>
     </div>
   );
 };

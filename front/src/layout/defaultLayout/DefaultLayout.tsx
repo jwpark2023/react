@@ -26,12 +26,9 @@ const DefaultLayout = (props: any) => {
         style={styles.header}
       >
         <HeaderTop {...props} />
-        <HeaderMenu />
       </header>
-      <div className="app-body">
-        <SideBar />
+      <div>
         <main className="main">
-          <Breadcrumb />
           <Container fluid>
             <Suspense fallback={loading()}>
               <Routes>
@@ -44,11 +41,10 @@ const DefaultLayout = (props: any) => {
                     />
                   ) : null;
                 })}
-              </Routes>              
+              </Routes>
             </Suspense>
           </Container>
         </main>
-        <Aside />
       </div>
       <footer className="app-footer" style={styles.footer}>
         footer
