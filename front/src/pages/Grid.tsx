@@ -39,7 +39,7 @@ const Grid = () => {
 
   // Example of consuming Grid Event
   const cellClickedListener = useCallback((event) => {
-    console.log("cellClicked", event);
+    console.log("cellClickded", event);
   }, []);
 
   // Example load data from server
