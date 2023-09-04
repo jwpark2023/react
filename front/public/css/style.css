@@ -12744,7 +12744,6 @@ canvas {
   position: relative;
   -ms-flex-direction: row;
   flex-direction: row;
-  height: 100px;
   padding: 0;
   margin: 0;
   background-color: #2f353a;
