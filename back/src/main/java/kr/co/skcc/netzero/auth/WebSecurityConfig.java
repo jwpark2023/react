@@ -2,6 +2,8 @@ package kr.co.skcc.netzero.auth;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+import java.util.Arrays;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -14,6 +16,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AnyRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import kr.co.skcc.netzero.auth.handler.UserDeniedHandler;
 import kr.co.skcc.netzero.auth.jwt.JwtAuthEntryPoint;
@@ -24,7 +30,7 @@ import kr.co.skcc.netzero.auth.service.UserAuthProvider;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = false)
 public class WebSecurityConfig {
-
+	
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new SHA246Encoder();
@@ -66,11 +72,28 @@ public class WebSecurityConfig {
             "/*.json",
             "/*.ico");
   }
+  
+  @Bean
+  public CorsConfigurationSource corsFilter() {
+	  CorsConfiguration config = new CorsConfiguration();
+
+      config.setAllowCredentials(true);
+      config.setAllowedOrigins(Arrays.asList("http://localhost:3001"));
+      config.setAllowedMethods(Arrays.asList("HEAD","POST","GET","DELETE","PUT"));
+      config.setAllowedHeaders(Arrays.asList("*"));
+
+      UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+      source.registerCorsConfiguration("/**", config);
+      return source;
+  }
 
   @Bean
   public SecurityFilterChain filterChain(JwtAuthEntryPoint unauthorizedHandler, HttpSecurity http) throws Exception {
+	  
     http
-        .cors(withDefaults())
+        .cors().configurationSource(corsFilter())
+//        .cors(withDefaults())
+        .and()
         .csrf(csrf -> csrf.disable())
         .headers(headers -> headers.frameOptions().disable())
         .authorizeHttpRequests(authz -> authz.antMatchers(
@@ -78,6 +101,7 @@ public class WebSecurityConfig {
           "/h2-console/**",
           "/sample/**",
           "/auth/**",
+          "/test/**",
           "/common/**")
         .permitAll()
         .antMatchers(
