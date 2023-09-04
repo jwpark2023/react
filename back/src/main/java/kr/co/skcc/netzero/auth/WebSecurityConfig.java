@@ -30,7 +30,7 @@ import kr.co.skcc.netzero.auth.service.UserAuthProvider;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = false)
 public class WebSecurityConfig {
-	
+
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new SHA246Encoder();
@@ -72,52 +72,34 @@ public class WebSecurityConfig {
             "/*.json",
             "/*.ico");
   }
-  
+
   @Bean
   public CorsConfigurationSource corsFilter() {
-	  CorsConfiguration config = new CorsConfiguration();
+    CorsConfiguration config = new CorsConfiguration();
 
-      config.setAllowCredentials(true);
-      config.setAllowedOrigins(Arrays.asList("http://localhost:3001"));
-      config.setAllowedMethods(Arrays.asList("HEAD","POST","GET","DELETE","PUT"));
-      config.setAllowedHeaders(Arrays.asList("*"));
+    config.setAllowCredentials(true);
+    config.setAllowedOrigins(Arrays.asList("http://localhost:3001"));
+    config.setAllowedMethods(Arrays.asList("HEAD", "POST", "GET", "DELETE", "PUT"));
+    config.setAllowedHeaders(Arrays.asList("*"));
 
-      UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-      source.registerCorsConfiguration("/**", config);
-      return source;
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", config);
+    return source;
   }
 
   @Bean
   public SecurityFilterChain filterChain(JwtAuthEntryPoint unauthorizedHandler, HttpSecurity http) throws Exception {
-	  
-    http
-        .cors().configurationSource(corsFilter())
-//        .cors(withDefaults())
-        .and()
-        .csrf(csrf -> csrf.disable())
-        .headers(headers -> headers.frameOptions().disable())
-        .authorizeHttpRequests(authz -> authz.antMatchers(
-          "/error/**",
-          "/h2-console/**",
-          "/sample/**",
-          "/auth/**",
-          "/test/**",
-          "/common/**")
-        .permitAll()
-        .antMatchers(
-          "/menu/**",
-          "/code/**")
-        .authenticated()
-        .anyRequest()
-        .denyAll())
-        .exceptionHandling(handling -> handling.defaultAccessDeniedHandlerFor(
-            new UserDeniedHandler(),
-            AnyRequestMatcher.INSTANCE)
-            .authenticationEntryPoint(unauthorizedHandler))
-        .sessionManagement(management -> management
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-    // .httpBasic(withDefaults());
     return http
+        .cors().configurationSource(corsFilter())
+        // .cors(withDefaults())
+        .and()
+        .csrf().disable()
+        .exceptionHandling()
+        .and()
+        .authorizeRequests() // 인증이 필요한 URL 패턴을 설정
+        .antMatchers("/sample/**").permitAll() // 모두 접근 가능
+        .anyRequest().authenticated() // 나머지 URL은 모두 인증이 필요
+        .and()
         .addFilterBefore(
             authenticationJwtTokenFilter(),
             UsernamePasswordAuthenticationFilter.class)
