@@ -16,6 +16,6 @@
   </settings>
 
   <typeAliases>
-    <typeAlias alias="dataMap" type="com.react.frw.common.DataMap" />
+    <typeAlias alias="dataMap" type="kr.co.skcc.netzero.common.DataMap" />
   </typeAliases>
 </configuration>

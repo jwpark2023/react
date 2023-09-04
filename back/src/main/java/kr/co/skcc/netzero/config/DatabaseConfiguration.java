@@ -39,7 +39,7 @@ public class DatabaseConfiguration {
 		sqlSessionFactoryBean.setDataSource(dataSource);
 		sqlSessionFactoryBean.setConfigLocation(applicationContext.getResource("classpath:mybatis/mybatis-config.xml"));
 		sqlSessionFactoryBean.setMapperLocations(applicationContext.getResources("classpath*:mybatis/mapper/**/*.xml"));
-		sqlSessionFactoryBean.setTypeAliasesPackage("com.react.frw.auth.vo");
+		sqlSessionFactoryBean.setTypeAliasesPackage("kr.co.skcc.netzero.auth.vo");
 		return sqlSessionFactoryBean.getObject();
 	}
 

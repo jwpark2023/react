@@ -1,6 +1,6 @@
 server:
   address: localhost
-  port: 8081
+  port: 8080
   
 spring:
   datasource:
@@ -24,7 +24,7 @@ logging:
     org.apache.coyote.http11: debug
     com.zaxxer.hikari.HikariConfig: DEBUG
     com.zaxxer.hikari: TRACE
-    com.react: DEBUG
+    kr.co.skcc.netzero: DEBUG
 
     jdbc:
       audit: OFF
