@@ -28,7 +28,7 @@ const DefaultLayout = (props: any) => {
         <HeaderTop {...props} />
       </header>
       <div>
-        <main className="main">
+        <main>
           <Container fluid>
             <Suspense fallback={loading()}>
               <Routes>
