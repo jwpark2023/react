@@ -66,6 +66,10 @@ const treeData: DataNode[] = [
                 title: "대분류2-중분류2",
                 key: "0222",
               },
+              {
+                title: "대분류2-중분류3",
+                key: "0222",
+              },
             ],
           },
         ],
@@ -157,7 +161,7 @@ const Grid = () => {
       <button onClick={buttonListener}>Push Me</button>
 
       <div style={{ display: "flex" }}>
-        <div style={{ width: "200px", marginRight: "5px" }}>
+        <div style={{ width: "300px", marginRight: "5px" }}>
           <Tree
             showLine
             switcherIcon={<DownOutlined />}
