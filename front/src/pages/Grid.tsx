@@ -15,9 +15,8 @@ import { request } from "src/utils/axios";
 
 const Grid = () => {
   interface ICar {
-    make: string;
-    model: string;
-    price: number;
+    username: string;
+    password: string;
   }
 
   const gridRef = useRef<AgGridReact<ICar>>(null);
@@ -25,9 +24,8 @@ const Grid = () => {
 
   // Each Column Definition results in one Column.
   const [columnDefs, setColumnDefs] = useState<ColDef<ICar>[]>([
-    { field: "make", filter: true },
-    { field: "model", filter: true },
-    { field: "price" },
+    { field: "username", filter: true },
+    { field: "password", filter: true },
   ]);
 
   // DefaultColDef sets props common to all Columns
@@ -45,8 +43,9 @@ const Grid = () => {
 
   // Example load data from server
   useEffect(() => {
-    const data = request("get", "/sample/userList", null);
-    console.log("userList: ", data);
+    request("get", "/sample/userList", null).then((result) =>
+      setRowData(result.dataSet)
+    );
     //setRowData(rowData);
 
     fetch("https://www.ag-grid.com/example-assets/row-data.json")
