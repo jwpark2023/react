@@ -78,7 +78,7 @@ public class WebSecurityConfig {
     CorsConfiguration config = new CorsConfiguration();
 
     config.setAllowCredentials(true);
-    config.setAllowedOrigins(Arrays.asList("http://localhost:3001"));
+    config.setAllowedOriginPatterns(Arrays.asList("*"));
     config.setAllowedMethods(Arrays.asList("HEAD", "POST", "GET", "DELETE", "PUT"));
     config.setAllowedHeaders(Arrays.asList("*"));
 
@@ -97,7 +97,10 @@ public class WebSecurityConfig {
         .exceptionHandling()
         .and()
         .authorizeRequests() // 인증이 필요한 URL 패턴을 설정
-        .antMatchers("/sample/**").permitAll() // 모두 접근 가능
+        .antMatchers(
+         "/auth/**",
+         "/sample/**")
+        .permitAll() // 모두 접근 가능
         .anyRequest().authenticated() // 나머지 URL은 모두 인증이 필요
         .and()
         .addFilterBefore(
