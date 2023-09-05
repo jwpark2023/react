@@ -134,12 +134,18 @@ const Grid = () => {
     console.log("cellClickded", event);
   }, []);
 
+  const getTreeData = () => {
+    request("get", "/sample/treeList", null).then((result) =>
+      console.log("/sample/treeList", result)
+    );
+  };
+
   // Example load data from server
   useEffect(() => {
     request("get", "/sample/userList", null).then((result) =>
       setRowData(result.dataSet)
     );
-    //setRowData(rowData);
+    getTreeData();
 
     fetch("https://www.ag-grid.com/example-assets/row-data.json")
       .then((result) => result.json())
