@@ -12,6 +12,7 @@
     <select id="getCodeTreeList" resultType="map" parameterType="map"> 
         SELECT CODE_CD
              , CODE_NM
+             , CODE_LVL
              , P_CODE_CD
              , DSP_ORDER
              , EXP_FR_DT
@@ -22,14 +23,38 @@
     </select>
 
     <select id="getCodeList" resultType="map" parameterType="map"> 
-        SELECT CODE_CD
-             , CODE_NM
-             , P_CODE_CD
-             , DSP_ORDER
-             , EXP_FR_DT
-             , EXP_TO_DT
-             , USE_YN
-          FROM CMN_CODE
+        SELECT A.CODE_CD
+             , A.CODE_NM
+             , A.CODE_LVL
+             , A.P_CODE_CD
+             , B.CODE_NM P_CODE_NM
+             , A.DSP_ORDER
+             , A.USE_YN
+             , A.EXP_FR_DT
+             , A.EXP_TO_DT
+             , A.ATTR1_JSON
+             , A.ATTR1_VAL
+             , A.ATTR2_JSON
+             , A.ATTR2_VAL
+             , A.ATTR3_JSON
+             , A.ATTR3_VAL
+             , A.ATTR4_JSON
+             , A.ATTR4_VAL
+             , A.ATTR5_JSON
+             , A.ATTR5_VAL
+             , A.ATTR6_JSON
+             , A.ATTR6_VAL
+             , A.ATTR7_JSON
+             , A.ATTR7_VAL
+             , A.ATTR8_JSON
+             , A.ATTR8_VAL
+             , A.ATTR9_JSON
+             , A.ATTR9_VAL
+             , A.ATTR10_JSON
+             , A.ATTR10_VAL
+          FROM CMN_CODE A
+             , CMN_CODE B
+         WHERE B.CODE_CD = A.P_CODE_CD
          ORDER BY P_CODE_CD, DSP_ORDER
     </select>
 </mapper>

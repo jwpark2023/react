@@ -46,4 +46,15 @@ public class SampleController {
 
     return new ResponseEntity<>(resultDto, httpHeaders, HttpStatus.OK);
   }
+
+  @Description("코드 트리 목록")
+  @GetMapping(value = "codeList")
+  public ResponseEntity<ResultDto> codeList() {
+    HttpHeaders httpHeaders = new HttpHeaders();
+
+    ResultDto resultDto = ResultDto.builder().build();
+    resultDto.setDataSet(service.getCodeList());
+
+    return new ResponseEntity<>(resultDto, httpHeaders, HttpStatus.OK);
+  }
 }

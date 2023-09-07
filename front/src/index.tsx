@@ -16,16 +16,14 @@ const rootElement = document.getElementById("root");
 const root = createRoot(rootElement as Element);
 
 root.render(
-  <React.StrictMode>
-    <ReduxProvider
-      // reduxThunk 방식
-      store={createStoreWidthMiddleware(
-        reducer,
-        (window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
-          (window as any).__REDUX_DEVTOOLS_EXTENSION__()
-      )}
-    >
-      <App />
-    </ReduxProvider>
-  </React.StrictMode>
+  <ReduxProvider
+    // reduxThunk 방식
+    store={createStoreWidthMiddleware(
+      reducer,
+      (window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
+        (window as any).__REDUX_DEVTOOLS_EXTENSION__()
+    )}
+  >
+    <App />
+  </ReduxProvider>
 );

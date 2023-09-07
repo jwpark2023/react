@@ -47,7 +47,10 @@ const DefaultLayout = (props: any) => {
         </main>
       </div>
       <footer className="app-footer" style={styles.footer}>
-        footer
+        <div style={{ textAlign: "center", width: "100%", fontSize: "15px" }}>
+          Copyright. 2023. SK 주식회사 C&C. all rights reserved. Powered by
+          Carbon biz team.
+        </div>
       </footer>
     </>
   );
