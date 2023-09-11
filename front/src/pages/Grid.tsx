@@ -1,33 +1,31 @@
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  useMemo,
-  useCallback,
-} from "react";
 import { AgGridReact } from "ag-grid-react"; // the AG Grid React Component
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { ColDef } from "ag-grid-community";
 import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
-import { ColDef } from "ag-grid-community";
 
 import { request } from "src/utils/axios";
 
 import { DownOutlined } from "@ant-design/icons";
 import {
-  Typography,
-  Tree,
-  message,
   Button,
+  Checkbox,
   Col,
+  DatePicker,
   Form,
   Input,
   Row,
   Select,
-  DatePicker,
-  Checkbox,
+  Tree,
+  Typography,
+  message,
 } from "antd";
 import type { TreeProps } from "antd/es/tree";
+import dayjs from "dayjs";
+import { Key } from "antd/es/table/interface";
+
+const dateFormat = "YYYY-MM-DD";
 
 const { Title, Paragraph, Text, Link } = Typography;
 
@@ -80,8 +78,8 @@ const Grid = () => {
   // Each Column Definition results in one Column.
   const [columnDefs, setColumnDefs] = useState<ColDef<MDM>[]>([
     { field: "P_CODE_NM", headerName: "분류", width: 120 },
-    { field: "CODE_CD", headerName: "코드" },
-    { field: "CODE_NM", headerName: "코드명" },
+    { field: "CODE_CD", headerName: "코드", width: 120 },
+    { field: "CODE_NM", headerName: "코드명", width: 120 },
     { field: "CODE_LVL", hide: true },
     { field: "P_CODE_CD", hide: true },
     { field: "DSP_ORDER", headerName: "", hide: true },
@@ -128,12 +126,25 @@ const Grid = () => {
   // tree
   const [treeData, setTreeData] = useState([]);
   const [expandedKeys, setExpandedKeys] = useState([]);
-  const [selectedKeys, setSelectedKeys] = useState([]);
+  const [selectedKeys, setSelectedKeys] = useState<Key[]>([]);
 
   // Example of consuming Grid Event
   const cellClickedListener = useCallback((event) => {
     console.log("cellClickded", event);
   }, []);
+
+  const initFormValues = () => {
+    let period: dayjs.Dayjs[] = [];
+    let now = dayjs();
+
+    period.push(now);
+    period.push(now);
+
+    form.setFieldsValue({
+      USE_YN: "Y",
+      PERIOD: period,
+    });
+  };
 
   const getTreeData = () => {
     request("get", "/sample/treeList", null).then((result) => {
@@ -152,16 +163,39 @@ const Grid = () => {
     });
   };
 
+  const getCodeList = () => {
+    form
+      .validateFields()
+      .then((fields) => {
+        console.log("fields begin", fields);
+        const params = {
+          ...fields,
+          PERIOD: [
+            fields.PERIOD[0].format(dateFormat),
+            fields.PERIOD[1].format(dateFormat),
+          ],
+        };
+        request("post", "/sample/codeList", params).then((result) => {
+          if (result.code != "S0000001" || result.dataSet.length < 1) {
+            messageApi.open({
+              type: "error",
+              content: "조회된 정보가 없습니다.",
+            });
+            setRowData(undefined);
+            return;
+          }
+          setRowData(result.dataSet);
+        });
+      })
+      .catch((e) => {
+        console.log("validateFields: ", e);
+      });
+  };
+
   // Example load data from server
   useEffect(() => {
-    request("get", "/sample/codeList", null).then((result) =>
-      setRowData(result.dataSet)
-    );
     getTreeData();
-
-    fetch("https://www.ag-grid.com/example-assets/row-data.json")
-      .then((result) => result.json())
-      .then((rowData) => setRowData(rowData));
+    initFormValues();
   }, []);
 
   // Example using Grid's API
@@ -169,8 +203,21 @@ const Grid = () => {
     console.log("버튼:", e);
   }, []);
 
-  const onSelect: TreeProps["onSelect"] = (selectedKeys, info) => {
-    console.log("selected", selectedKeys, info);
+  const onSelect: TreeProps["onSelect"] = (keys, info) => {
+    setSelectedKeys(keys);
+    request("post", "/sample/codeList", { P_CODE_CD: keys[0] }).then(
+      (result) => {
+        if (result.code != "S0000001" || result.dataSet.length < 1) {
+          messageApi.open({
+            type: "error",
+            content: "조회된 정보가 없습니다.",
+          });
+          setRowData(undefined);
+          return;
+        }
+        setRowData(result.dataSet);
+      }
+    );
   };
 
   return (
@@ -190,6 +237,7 @@ const Grid = () => {
             padding: "12px",
             borderRadius: "5px",
           }}
+          onKeyUp={(e) => e.key === "Enter" && getCodeList()}
         >
           <Row gutter={24}>
             <Col span={5}>
@@ -214,48 +262,31 @@ const Grid = () => {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={3}>
-              <Form.Item name="VISIBLE_ATTR_NM" label="속성명 표시">
-                <Checkbox />
-              </Form.Item>
-            </Col>
-            <Col span={5}>
+            <Col span={6}>
               <Form.Item name="PERIOD" label="기간">
-                <RangePicker />
+                <RangePicker format={"YYYY-MM-DD"} />
               </Form.Item>
             </Col>
-            <Col span={6} />
+            <Col span={5} />
             <Col span={2}>
-              <Button type="primary" style={{ width: "100%" }}>
+              <Button
+                type="primary"
+                style={{ width: "100%" }}
+                onClick={getCodeList}
+              >
                 조회
               </Button>
             </Col>
           </Row>
         </Form>
       </div>
-      <div style={{ textAlign: "right" }}>
-        <Button size={"small"} style={{ width: 90 }} onClick={buttonListener}>
-          엑셀 업로드
-        </Button>
-        <Button size={"small"} style={{ width: 90 }} onClick={buttonListener}>
-          엑셀 다운로드
-        </Button>
-        <Button size={"small"} style={{ width: 60 }} onClick={buttonListener}>
-          추가
-        </Button>
-        <Button size={"small"} style={{ width: 60 }} onClick={buttonListener}>
-          삭제
-        </Button>
-        <Button size={"small"} style={{ width: 60 }} onClick={buttonListener}>
-          저장
-        </Button>
-      </div>
 
       <div style={{ display: "flex", height: 700 }}>
         <div
           style={{
             width: 300,
-            marginRight: "5px",
+            marginTop: 24,
+            marginRight: 5,
             background: "#ffff",
             borderRadius: "4px",
           }}
@@ -271,6 +302,54 @@ const Grid = () => {
           />
         </div>
         <div className="ag-theme-alpine" style={{ width: "100%" }}>
+          <div style={{ display: "flex" }}>
+            <Checkbox style={{ paddingLeft: 1, width: "20%" }}>
+              속성명 표시
+            </Checkbox>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                width: "80%",
+              }}
+            >
+              <Button
+                size={"small"}
+                style={{ width: 90 }}
+                onClick={buttonListener}
+              >
+                엑셀 업로드
+              </Button>
+              <Button
+                size={"small"}
+                style={{ width: 90 }}
+                onClick={buttonListener}
+              >
+                엑셀 다운로드
+              </Button>
+              <Button
+                size={"small"}
+                style={{ width: 60 }}
+                onClick={buttonListener}
+              >
+                추가
+              </Button>
+              <Button
+                size={"small"}
+                style={{ width: 60 }}
+                onClick={buttonListener}
+              >
+                삭제
+              </Button>
+              <Button
+                size={"small"}
+                style={{ width: 60 }}
+                onClick={buttonListener}
+              >
+                저장
+              </Button>
+            </div>
+          </div>
           <AgGridReact
             ref={gridRef} // Ref for accessing Grid's API
             rowData={rowData} // Row Data for Rows

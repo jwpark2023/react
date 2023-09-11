@@ -11,5 +11,5 @@ public interface SampleDao {
 
     public List<Map<String, Object>> getCodeTreeList();
 
-    public List<Map<String, Object>> getCodeList();
+    public List<Map<String, Object>> getCodeList(Map<String, Object> param);
 }

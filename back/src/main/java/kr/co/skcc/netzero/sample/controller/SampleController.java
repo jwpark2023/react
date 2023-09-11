@@ -1,7 +1,6 @@
 package kr.co.skcc.netzero.sample.controller;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
@@ -9,6 +8,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -47,13 +48,13 @@ public class SampleController {
     return new ResponseEntity<>(resultDto, httpHeaders, HttpStatus.OK);
   }
 
-  @Description("코드 트리 목록")
-  @GetMapping(value = "codeList")
-  public ResponseEntity<ResultDto> codeList() {
+  @Description("코드 목록")
+  @PostMapping(value = "codeList")
+  public ResponseEntity<ResultDto> codeList(@RequestBody HashMap<String, Object> param) {
     HttpHeaders httpHeaders = new HttpHeaders();
 
     ResultDto resultDto = ResultDto.builder().build();
-    resultDto.setDataSet(service.getCodeList());
+    resultDto.setDataSet(service.getCodeList(param));
 
     return new ResponseEntity<>(resultDto, httpHeaders, HttpStatus.OK);
   }
