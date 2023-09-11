@@ -17,8 +17,16 @@ public class SampleService {
   @Resource(name = "sampleDao")
   private SampleDao sampleDao;
 
-  public List<Map<String, Object>>  getUserList() {
+  public List<Map<String, Object>> getUserList() {
     return sampleDao.getUserList();
+  }
+
+  public List<Map<String, Object>> getCodeTreeList() {
+    return sampleDao.getCodeTreeList();
+  }
+
+  public List<Map<String, Object>> getCodeList() {
+    return sampleDao.getCodeList();
   }
 
 }

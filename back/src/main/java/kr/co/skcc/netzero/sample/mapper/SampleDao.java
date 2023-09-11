@@ -8,4 +8,8 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface SampleDao {
     public List<Map<String, Object>> getUserList();
+
+    public List<Map<String, Object>> getCodeTreeList();
+
+    public List<Map<String, Object>> getCodeList();
 }
