@@ -301,7 +301,7 @@ const Grid = () => {
             height={700}
           />
         </div>
-        <div className="ag-theme-alpine" style={{ width: "100%" }}>
+        <div style={{ height: 700, width: "100%" }}>
           <div style={{ display: "flex" }}>
             <Checkbox style={{ paddingLeft: 1, width: "20%" }}>
               속성명 표시
@@ -350,15 +350,20 @@ const Grid = () => {
               </Button>
             </div>
           </div>
-          <AgGridReact
-            ref={gridRef} // Ref for accessing Grid's API
-            rowData={rowData} // Row Data for Rows
-            columnDefs={columnDefs} // Column Defs for Columns
-            defaultColDef={defaultColDef} // Default Column Properties
-            animateRows={true} // Optional - set to 'true' to have rows animate when sorted
-            rowSelection="multiple" // Options - allows click selection of rows
-            onCellClicked={cellClickedListener} // Optional - registering for Grid Event
-          />
+          <div
+            className="ag-theme-alpine"
+            style={{ width: "100%", height: 676 }}
+          >
+            <AgGridReact
+              ref={gridRef} // Ref for accessing Grid's API
+              rowData={rowData} // Row Data for Rows
+              columnDefs={columnDefs} // Column Defs for Columns
+              defaultColDef={defaultColDef} // Default Column Properties
+              animateRows={true} // Optional - set to 'true' to have rows animate when sorted
+              rowSelection="multiple" // Options - allows click selection of rows
+              onCellClicked={cellClickedListener} // Optional - registering for Grid Event
+            />
+          </div>
         </div>
       </div>
     </div>
