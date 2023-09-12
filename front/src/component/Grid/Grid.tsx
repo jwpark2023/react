@@ -12,18 +12,17 @@ import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 import { ColDef } from "ag-grid-community";
 import ButtonForGrid from "src/component/Grid/ButtonForGrid";
 import CheckBoxForGrid from "src/component/Grid/CheckBoxForGrid";
-
-import { request } from "src/utils/axios";
-
+import DatePickerForGrid from "src/component/Grid/DatePickerForGrid";
 
 const Grid = ( props ) => {
 
-  const gridStyle = useMemo(() => ({ height: 500, width: 1000 }), []);
+  const gridStyle = useMemo(() => ({ height: 676, width: "100%" }), []);
 
   const components = useMemo(() => {
     return {
       buttonrenderer: ButtonForGrid,
       checkboxrenderer: CheckBoxForGrid,
+      datepickerrenderer: DatePickerForGrid
     };
   }, []);
 
@@ -36,7 +35,7 @@ const Grid = ( props ) => {
     <div>
       <div style={gridStyle} className="ag-theme-alpine">
          <AgGridReact
-          rowData={props.rowdatas}
+          rowData={props.rowData}
           columnDefs={props.columnDefs}
           defaultColDef={props.defaultColDef}
           onGridReady={props.onGridReady}    
