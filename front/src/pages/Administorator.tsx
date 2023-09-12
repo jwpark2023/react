@@ -1,4 +1,4 @@
-import { AgGridReact } from "ag-grid-react"; // the AG Grid React Component
+// import { AgGridReact } from "ag-grid-react"; // the AG Grid React Component
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { ColDef } from "ag-grid-community";
@@ -24,6 +24,7 @@ import {
 import type { TreeProps } from "antd/es/tree";
 import dayjs from "dayjs";
 import { Key } from "antd/es/table/interface";
+import Grid from "src/component/Grid/Grid";
 
 const dateFormat = "YYYY-MM-DD";
 
@@ -38,7 +39,7 @@ const arrayToTree = (arr, parent) =>
       children: arrayToTree(arr, child.CODE_CD),
     }));
 
-const Grid = () => {
+const Administorator = () => {
   interface MDM {
     CODE_CD: string;
     CODE_NM: string;
@@ -71,7 +72,7 @@ const Grid = () => {
     ATTR10_VAL: string;
   }
 
-  const gridRef = useRef<AgGridReact<MDM>>(null);
+  // const gridRef = useRef<AgGridReact<MDM>>(null);
   const [rowData, setRowData] = useState(); // Set rowData to Array of Objects, one Object per Row
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -350,12 +351,9 @@ const Grid = () => {
               </Button>
             </div>
           </div>
-          <div
-            className="ag-theme-alpine"
-            style={{ width: "100%", height: 676 }}
-          >
-            <AgGridReact
-              ref={gridRef} // Ref for accessing Grid's API
+          <div>
+            <Grid
+              // ref={gridRef} // Ref for accessing Grid's API
               rowData={rowData} // Row Data for Rows
               columnDefs={columnDefs} // Column Defs for Columns
               defaultColDef={defaultColDef} // Default Column Properties
@@ -370,4 +368,4 @@ const Grid = () => {
   );
 };
 
-export default Grid;
+export default Administorator;

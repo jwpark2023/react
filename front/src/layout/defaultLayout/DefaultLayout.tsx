@@ -4,12 +4,12 @@ import { Route, Routes } from "react-router-dom";
 import { Aside, Breadcrumb, HeaderMenu, HeaderTop, SideBar } from "./fragments";
 
 const Dashboard = React.lazy(() => import("src/pages/Dashboard"));
-const Grid = React.lazy(() => import("src/pages/Grid"));
+const Administorator = React.lazy(() => import("src/pages/Administorator"));
 const Page121 = React.lazy(() => import("src/pages/Page121"));
 
 const routes = [
   { path: "/dashboard", name: "dashboard", component: Dashboard },
-  { path: "/grid", name: "page111", component: Grid },
+  { path: "/grid", name: "page111", component: Administorator },
   { path: "/page121", name: "page121", component: Page121 },
 ];
 
