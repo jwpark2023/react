@@ -55,6 +55,19 @@
           FROM CMN_CODE A
              , CMN_CODE B
          WHERE B.CODE_CD = A.P_CODE_CD
-         ORDER BY P_CODE_CD, DSP_ORDER
+         <if test='P_CODE_CD != null and P_CODE_CD != ""'>
+           AND A.P_CODE_CD = #{P_CODE_CD}
+         </if>
+         <if test='SEARCH_TEXT != null and SEARCH_TEXT != ""'>
+           AND INSTR(CONCAT(IFNULL(A.CODE_NM,''),IFNULL(A.ATTR1_VAL,''),IFNULL(A.ATTR2_VAL,''),IFNULL(A.ATTR3_VAL,''),IFNULL(A.ATTR4_VAL,''),IFNULL(A.ATTR5_VAL,'')), #{SEARCH_TEXT}) <![CDATA[>]]> 0
+         </if>
+         <if test='USE_YN != null and USE_YN != ""'>
+           AND A.USE_YN = #{USE_YN}
+         </if>
+         <if test='PERIOD != null and PERIOD.size() > 0'>
+           AND A.EXP_FR_DT <![CDATA[<=]]> STR_TO_DATE(#{PERIOD[1]}, '%Y-%m-%d')
+           AND A.EXP_TO_DT <![CDATA[>=]]> STR_TO_DATE(#{PERIOD[0]}, '%Y-%m-%d')
+         </if>
+         ORDER BY A.CODE_LVL, A.P_CODE_CD, A.DSP_ORDER
     </select>
 </mapper>

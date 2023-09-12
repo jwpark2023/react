@@ -25,8 +25,8 @@ public class SampleService {
     return sampleDao.getCodeTreeList();
   }
 
-  public List<Map<String, Object>> getCodeList() {
-    return sampleDao.getCodeList();
+  public List<Map<String, Object>> getCodeList(Map<String, Object> param) {
+    return sampleDao.getCodeList(param);
   }
 
 }
