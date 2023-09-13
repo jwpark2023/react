@@ -13,6 +13,7 @@ import { ColDef } from "ag-grid-community";
 import ButtonForGrid from "src/component/Grid/ButtonForGrid";
 import CheckBoxForGrid from "src/component/Grid/CheckBoxForGrid";
 import DatePickerForGrid from "src/component/Grid/DatePickerForGrid";
+import ImageForGrid from "src/component/Grid/ImageForGrid";
 
 const Grid = ( props ) => {
 
@@ -20,9 +21,10 @@ const Grid = ( props ) => {
 
   const components = useMemo(() => {
     return {
-      buttonrenderer: ButtonForGrid,
-      checkboxrenderer: CheckBoxForGrid,
-      datepickerrenderer: DatePickerForGrid
+      buttonrenderer : ButtonForGrid,
+      checkboxrenderer : CheckBoxForGrid,
+      datepickerrenderer : DatePickerForGrid,
+      imagerenderer : ImageForGrid
     };
   }, []);
 

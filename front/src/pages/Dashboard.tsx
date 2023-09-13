@@ -7,6 +7,7 @@ import React, {
 
 import { ColDef } from "ag-grid-community";
 import dayjs from 'dayjs';
+import { Button } from "antd";
 
 const Grid = React.lazy(() => import("src/component/Grid/Grid"));
 
@@ -26,12 +27,17 @@ const Dashboard = () => {
 //     { field: 'age' },
 // ]);
   const [columnDefs, setColumnDefs] = useState<ColDef<ICode>[]>([
-    { field: "chk" , 
+    { 
+      field: "chk" , 
       cellRenderer : 'checkboxrenderer',
     },
     { field: "year", 
-      minWidth: 50
-      // filter: 'agNumberColumnFilter' 
+      minWidth: 50,
+      filter: 'agNumberColumnFilter',
+      // cellRenderer : 'imagerenderer',
+      // cellRendererParams : {
+      //   src : "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+      // }
     },
     {
       field: 'date',
@@ -41,11 +47,12 @@ const Dashboard = () => {
         range : false,
         defaultValue: dayjs('2015/01/01', 'YYYY/MM/DD'),
         format : 'YYYY/MM/DD'
-      }
-      // filter: 'agDateColumnFilter',
+      },
+      filter: 'agDateColumnFilter',
       // filterParams: 'filterParams',
     },
-    { field: "total", 
+    { 
+      field: "total", 
       minWidth: 175 , 
       cellRenderer : 'buttonrenderer', 
       cellRendererParams: {
@@ -83,15 +90,16 @@ const Dashboard = () => {
       flex: 1,
       // minWidth: 100,
       // filter: true,
-      // floatingFilter: true,
+      floatingFilter: true,
       resizable: true,
     };
   }, []);
 
   return (
     // <>{JSON.stringify(rowdatas)}</>
-    <Grid  rowData={rowData} columnDefs={columnDefs} onGridReady={onGridReady} cellClickedListener={cellClickedListener} defaultColDef={defaultColDef} />
-
+    <div>
+      <Grid  rowData={rowData} columnDefs={columnDefs} onGridReady={onGridReady} cellClickedListener={cellClickedListener} defaultColDef={defaultColDef} />
+    </div>
   );
 };
 
