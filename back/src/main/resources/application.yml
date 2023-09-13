@@ -1,15 +1,15 @@
 server:
   address: localhost
   port: 8080
-  
+
 spring:
   datasource:
     # hikari:
-      # type: com.zaxxer.hikari.HikariDataSource
-      # driver-class-name: com.mysql.cj.jdbc.Driver
-      # jdbc-url: jdbc:mysql://localhost:3306/centero_local
+    # type: com.zaxxer.hikari.HikariDataSource
+    # driver-class-name: com.mysql.cj.jdbc.Driver
+    # jdbc-url: jdbc:mysql://localhost:3306/centero_local
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-    jdbc-url: jdbc:log4jdbc:mysql://localhost:3306/centero_local
+    jdbc-url: jdbc:log4jdbc:mysql://localhost:3306/centero_local?allowMultiQueries=true
     username: centero_admin
     password: Dbswjddnr!23
     hikari:
@@ -18,7 +18,7 @@ spring:
       minimum-idle: 5
       max-lifetime: 240000
       maximum-pool-size: 10
-      
+
 logging:
   level:
     org.apache.coyote.http11: debug
@@ -29,7 +29,7 @@ logging:
     jdbc:
       audit: OFF
       resultset: OFF
-      resultsettable: OFF  #SQL 결과 데이터 Table을 로그로 남긴다.
-      sqlonly: OFF     #SQL만 로그로 남긴다.
-      sqltiming: INFO    #SQL과 소요시간을 표기한다.
-      connection : OFF  # 커넥션 확인가능
+      resultsettable: OFF #SQL 결과 데이터 Table을 로그로 남긴다.
+      sqlonly: OFF #SQL만 로그로 남긴다.
+      sqltiming: INFO #SQL과 소요시간을 표기한다.
+      connection: OFF # 커넥션 확인가능

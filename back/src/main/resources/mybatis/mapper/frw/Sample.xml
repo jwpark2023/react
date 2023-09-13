@@ -70,4 +70,105 @@
          </if>
          ORDER BY A.CODE_LVL, A.P_CODE_CD, A.DSP_ORDER
     </select>
+
+    <update id="saveCodeList" parameterType="java.util.List">
+        <foreach collection="list" item="item">
+            <choose>
+            <when test='item.CRUD_FLAG == "C"'>
+                INSERT
+                  INTO CMN_CODE(
+                      CODE_CD
+                    , CODE_NM
+                    , CODE_LVL
+                    , P_CODE_CD
+                    , DSP_ORDER
+                    , USE_YN
+                    , EXP_FR_DT
+                    , EXP_TO_DT
+                    , ATTR1_JSON
+                    , ATTR1_VAL
+                    , ATTR2_JSON
+                    , ATTR2_VAL
+                    , ATTR3_JSON
+                    , ATTR3_VAL
+                    , ATTR4_JSON
+                    , ATTR4_VAL
+                    , ATTR5_JSON
+                    , ATTR5_VAL
+                    , ATTR6_JSON
+                    , ATTR6_VAL
+                    , ATTR7_JSON
+                    , ATTR7_VAL
+                    , ATTR8_JSON
+                    , ATTR8_VAL
+                    , ATTR9_JSON
+                    , ATTR9_VAL
+                    , ATTR10_JSON
+                    , ATTR10_VAL)
+                VALUES (
+                      #{item.CODE_CD}
+                    , #{item.CODE_NM}
+                    , #{item.CODE_LVL}
+                    , #{item.P_CODE_CD}
+                    , #{item.DSP_ORDER}
+                    , #{item.USE_YN}
+                    , #{item.EXP_FR_DT}
+                    , #{item.EXP_TO_DT}
+                    , #{item.ATTR1_JSON}
+                    , #{item.ATTR1_VAL}
+                    , #{item.ATTR2_JSON}
+                    , #{item.ATTR2_VAL}
+                    , #{item.ATTR3_JSON}
+                    , #{item.ATTR3_VAL}
+                    , #{item.ATTR4_JSON}
+                    , #{item.ATTR4_VAL}
+                    , #{item.ATTR5_JSON}
+                    , #{item.ATTR5_VAL}
+                    , #{item.ATTR6_JSON}
+                    , #{item.ATTR6_VAL}
+                    , #{item.ATTR7_JSON}
+                    , #{item.ATTR7_VAL}
+                    , #{item.ATTR8_JSON}
+                    , #{item.ATTR8_VAL}
+                    , #{item.ATTR9_JSON}
+                    , #{item.ATTR9_VAL}
+                    , #{item.ATTR10_JSON}
+                    , #{item.ATTR10_VAL}               
+                );
+            </when>
+            <otherwise>
+                UPDATE CMN_CODE
+                   SET CODE_NM = #{item.CODE_NM}
+                    , CODE_LVL = #{item.CODE_LVL}
+                    , P_CODE_CD = #{item.P_CODE_CD}
+                    , DSP_ORDER = #{item.DSP_ORDER}
+                    , USE_YN = #{item.USE_YN}
+                    , EXP_FR_DT = #{item.EXP_FR_DT}
+                    , EXP_TO_DT = #{item.EXP_TO_DT}
+                    , ATTR1_JSON = #{item.ATTR1_JSON}
+                    , ATTR1_VAL = #{item.ATTR1_VAL}
+                    , ATTR2_JSON = #{item.ATTR2_JSON}
+                    , ATTR2_VAL = #{item.ATTR2_VAL}
+                    , ATTR3_JSON = #{item.ATTR3_JSON}
+                    , ATTR3_VAL = #{item.ATTR3_VAL}
+                    , ATTR4_JSON = #{item.ATTR4_JSON}
+                    , ATTR4_VAL = #{item.ATTR4_VAL}
+                    , ATTR5_JSON = #{item.ATTR5_JSON}
+                    , ATTR5_VAL = #{item.ATTR5_VAL}
+                    , ATTR6_JSON = #{item.ATTR6_JSON}
+                    , ATTR6_VAL = #{item.ATTR6_VAL}
+                    , ATTR7_JSON = #{item.ATTR7_JSON}
+                    , ATTR7_VAL = #{item.ATTR7_VAL}
+                    , ATTR8_JSON = #{item.ATTR8_JSON}
+                    , ATTR8_VAL = #{item.ATTR8_VAL}
+                    , ATTR9_JSON = #{item.ATTR9_JSON}
+                    , ATTR9_VAL = #{item.ATTR9_VAL}
+                    , ATTR10_JSON = #{item.ATTR10_JSON}
+                    , ATTR10_VAL = #{item.ATTR10_VAL} 
+                WHERE CODE_CD = #{item.CODE_CD}
+                ;
+            </otherwise>
+            </choose>
+        </foreach>
+    </update>
 </mapper>

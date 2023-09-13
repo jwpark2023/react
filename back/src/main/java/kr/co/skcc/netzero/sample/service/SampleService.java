@@ -1,5 +1,6 @@
 package kr.co.skcc.netzero.sample.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,10 @@ public class SampleService {
 
   public List<Map<String, Object>> getCodeList(Map<String, Object> param) {
     return sampleDao.getCodeList(param);
+  }
+
+  public void saveCodeList(List<HashMap<String, Object>> param) {
+    sampleDao.saveCodeList(param);
   }
 
 }

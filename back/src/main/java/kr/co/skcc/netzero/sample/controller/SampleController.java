@@ -1,6 +1,7 @@
 package kr.co.skcc.netzero.sample.controller;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Description;
@@ -55,6 +56,19 @@ public class SampleController {
 
     ResultDto resultDto = ResultDto.builder().build();
     resultDto.setDataSet(service.getCodeList(param));
+
+    return new ResponseEntity<>(resultDto, httpHeaders, HttpStatus.OK);
+  }
+
+  @Description("코드 목록 저장")
+  @PostMapping(value = "saveCodeList")
+  public ResponseEntity<ResultDto> saveCodeList(@RequestBody List<HashMap<String, Object>> param) {
+    HttpHeaders httpHeaders = new HttpHeaders();
+    log.info("saveCodeList param", param);
+
+    ResultDto resultDto = ResultDto.builder().build();
+    service.saveCodeList(param);
+    resultDto.setMessage("저장에 실패하였습니다.");
 
     return new ResponseEntity<>(resultDto, httpHeaders, HttpStatus.OK);
   }
