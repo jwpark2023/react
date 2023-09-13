@@ -21,7 +21,7 @@ import {
   Typography,
   message,
 } from "antd";
-import type { DataNode, TreeProps } from "antd/es/tree";
+import type { TreeProps } from "antd/es/tree";
 import dayjs from "dayjs";
 import { Key } from "antd/es/table/interface";
 import Grid from "src/component/Grid/Grid";
@@ -77,8 +77,7 @@ const Administorator = () => {
   const [messageApi, contextHolder] = message.useMessage();
 
   // Each Column Definition results in one Column.
-  const [columnDefs, setColumnDefs] = useState<ColDef<any>[]>([
-    { field: "CRUD_FLAG", headerName: "", width: 20 },
+  const [columnDefs, setColumnDefs] = useState<ColDef<MDM>[]>([
     { field: "P_CODE_NM", headerName: "분류", width: 120 },
     { field: "CODE_CD", headerName: "코드", width: 120 },
     { field: "CODE_NM", headerName: "코드명", width: 120 },
@@ -115,7 +114,6 @@ const Administorator = () => {
     () => ({
       width: 100,
       sortable: true,
-      editable: true,
     }),
     []
   );
@@ -130,7 +128,6 @@ const Administorator = () => {
   const [treeData, setTreeData] = useState([]);
   const [expandedKeys, setExpandedKeys] = useState([]);
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([]);
-  const [selectedNode, setSelectedNode] = useState<DataNode>();
 
   // Example of consuming Grid Event
   const cellClickedListener = useCallback((event) => {
@@ -171,6 +168,7 @@ const Administorator = () => {
     form
       .validateFields()
       .then((fields) => {
+        console.log("fields begin", fields);
         const params = {
           ...fields,
           PERIOD: [
@@ -206,69 +204,8 @@ const Administorator = () => {
     console.log("버튼:", e);
   }, []);
 
-  const handleBtnAdd = (e) => {
-    console.log("추가 selectedKeys:", selectedKeys);
-    if (selectedKeys.length < 1) {
-      message.warning("상위 분류를 선택하세요.");
-      return;
-    }
-    gridRef.current?.api.applyTransaction({
-      addIndex: 0,
-      add: [
-        {
-          ...defaultRow,
-          CRUD_FLAG: "C",
-          P_CODE_CD: selectedNode?.key,
-          P_CODE_NM: selectedNode?.title,
-        },
-      ],
-    });
-  };
-
-  const handleBtnDelete = (e) => {
-    if (
-      gridRef.current?.api.getSelectedNodes() &&
-      gridRef.current?.api.getSelectedNodes().length < 1
-    ) {
-      message.warning("삭제할 행을 선택하세요.");
-      return;
-    }
-
-    let currNode = gridRef.current?.api.getSelectedNodes()[0];
-
-    if (!["C"].includes(currNode?.data.CRUD_FLAG)) {
-      message.warning(
-        "저장된 행은 삭제할 수 없습니다.\n 사용유무를 변경하세요"
-      );
-      return;
-    }
-
-    currNode?.setDataValue("CRUD_FLAG", "D");
-  };
-
-  const handleBtnSave = (e) => {
-    let data: any[] = [];
-    gridRef.current?.api.forEachNode((node) => {
-      if (["C", "U"].includes(node?.data.CRUD_FLAG)) {
-        data.push(node?.data);
-      }
-    });
-
-    request("post", "/sample/saveCodeList", data).then((result) => {
-      if (result.code != "S0000001") {
-        messageApi.open({
-          type: "error",
-          content: "저장에 실패하였습니다.",
-        });
-      }
-      getTreeData();
-      getCodeList();
-    });
-  };
-
-  const onTreeNodeSelect: TreeProps["onSelect"] = (keys, info) => {
+  const onSelect: TreeProps["onSelect"] = (keys, info) => {
     setSelectedKeys(keys);
-    setSelectedNode(info.node);
     request("post", "/sample/codeList", { P_CODE_CD: keys[0] }).then(
       (result) => {
         if (result.code != "S0000001" || result.dataSet.length < 1) {
@@ -282,13 +219,6 @@ const Administorator = () => {
         setRowData(result.dataSet);
       }
     );
-  };
-
-  const onCellValueChanged = (e) => {
-    // console.log("onCellValueChanged:", e);
-    if (!["C", "D"].includes(e.node.data.CRUD_FLAG)) {
-      e.node.setDataValue("CRUD_FLAG", "U");
-    }
   };
 
   return (
@@ -367,7 +297,7 @@ const Administorator = () => {
             switcherIcon={<DownOutlined />}
             expandedKeys={expandedKeys}
             selectedKeys={selectedKeys}
-            onSelect={onTreeNodeSelect}
+            onSelect={onSelect}
             treeData={treeData}
             height={700}
           />
@@ -401,21 +331,21 @@ const Administorator = () => {
               <Button
                 size={"small"}
                 style={{ width: 60 }}
-                onClick={handleBtnAdd}
+                onClick={buttonListener}
               >
                 추가
               </Button>
               <Button
                 size={"small"}
                 style={{ width: 60 }}
-                onClick={handleBtnDelete}
+                onClick={buttonListener}
               >
                 삭제
               </Button>
               <Button
                 size={"small"}
                 style={{ width: 60 }}
-                onClick={handleBtnSave}
+                onClick={buttonListener}
               >
                 저장
               </Button>
@@ -428,8 +358,8 @@ const Administorator = () => {
               columnDefs={columnDefs} // Column Defs for Columns
               defaultColDef={defaultColDef} // Default Column Properties
               animateRows={true} // Optional - set to 'true' to have rows animate when sorted
+              rowSelection="multiple" // Options - allows click selection of rows
               onCellClicked={cellClickedListener} // Optional - registering for Grid Event
-              onCellValueChanged={onCellValueChanged}
             />
           </div>
         </div>
