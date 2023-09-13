@@ -5,11 +5,13 @@ import { Aside, Breadcrumb, HeaderMenu, HeaderTop, SideBar } from "./fragments";
 
 const Dashboard = React.lazy(() => import("src/pages/Dashboard"));
 const Administorator = React.lazy(() => import("src/pages/Administorator"));
+const GridSaple = React.lazy(() => import("src/pages/Grid"));
 const Page121 = React.lazy(() => import("src/pages/Page121"));
 
 const routes = [
   { path: "/dashboard", name: "dashboard", component: Dashboard },
   { path: "/grid", name: "page111", component: Administorator },
+  { path: "/gridsample", name: "gridsample", component: GridSaple },
   { path: "/page121", name: "page121", component: Page121 },
 ];
 

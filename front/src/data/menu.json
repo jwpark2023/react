@@ -78,7 +78,18 @@
           "baseUrl": "/page111",
           "sortOd": 2,
           "isTitle": 1,
-          "children": []
+          "children": [
+            {
+              "lvl": 1,
+              "rootId": "0000000",
+              "menuId": "S0000021",
+              "pMenuId": "S000002",
+              "menuNm": "gridSample",
+              "baseUrl": "/gridsample",
+              "sortOd": 2,
+              "isTitle": 1
+            }
+          ]
         },
         {
           "lvl": 1,
