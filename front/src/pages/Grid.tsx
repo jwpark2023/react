@@ -96,8 +96,8 @@ const Grid = () => {
     { field: "ATTR8_VAL", headerName: "속성8" },
     { field: "ATTR9_VAL", headerName: "속성9" },
     { field: "ATTR10_VAL", headerName: "속성10" },
-    { field: "EXP_FR_DT", headerName: "시작일", width: 120 },
-    { field: "EXP_TO_DT", headerName: "종료일", width: 120 },
+    { field: "EXP_FR_DT", headerName: "시작일", width: 200, cellRenderer : 'datepickerrenderer' },
+    { field: "EXP_TO_DT", headerName: "종료일", width: 200, cellRenderer : 'datepickerrenderer' },
     { field: "ATTR1_JSON", headerName: "속성1 명" },
     { field: "ATTR2_JSON", headerName: "속성2 명" },
     { field: "ATTR3_JSON", headerName: "속성3 명" },
@@ -201,6 +201,14 @@ const Grid = () => {
     initFormValues();
   }, []);
 
+  // useEffect(() => {
+  //   gridRef.current?.api.forEachNode((node) => {
+  //     // node.setDataValue("EXP_FR_DT", "D");
+  //     //   node.setDataValue("EXP_FR_DT", "D");
+  //     console.log(gridRef.current?.api.getValue("EXP_FR_DT", node));
+  //   });
+  // }, [rowData]);
+
   // Example using Grid's API
   const buttonListener = useCallback((e) => {
     console.log("버튼:", e);
@@ -243,31 +251,14 @@ const Grid = () => {
       }
     });
 
+    // console.log(rowData);
 
-    // if (
-    //   gridRef.current?.api.getSelectedNodes() &&
-    //   gridRef.current?.api.getSelectedNodes().length < 1
-    // ) {
-    //   message.warning("삭제할 행을 선택하세요.");
-    //   return;
-    // }
-
-    // let currNode = gridRef.current?.api.getSelectedNodes()[0];
-
-    // if (!["C"].includes(currNode?.data.CRUD_FLAG)) {
-    //   message.warning(
-    //     "저장된 행은 삭제할 수 없습니다.\n 사용유무를 변경하세요"
-    //   );
-    //   return;
-    // }
-
-    // currNode?.setDataValue("CRUD_FLAG", "D");
   };
 
   const handleBtnSave = (e) => {
     let data: any[] = [];
     gridRef.current?.api.forEachNode((node) => {
-      if (["C", "U"].includes(node?.data.CRUD_FLAG)) {
+      if (["C", "U","D"].includes(node?.data.CRUD_FLAG)) {
         data.push(node?.data);
       }
     });
