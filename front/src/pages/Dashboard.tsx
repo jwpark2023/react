@@ -5,11 +5,11 @@ import React, {
   useMemo
 } from "react";
 
-import { ColDef } from "ag-grid-community";
+import { ColDef, ColumnApi } from "ag-grid-community";
 import dayjs from 'dayjs';
 import { Button } from "antd";
 
-const Grid = React.lazy(() => import("src/component/Grid/Grid"));
+const CMMGrid = React.lazy(() => import("src/component/Grid/CMMGrid"));
 
 const Dashboard = () => {
   interface ICode {
@@ -20,16 +20,38 @@ const Dashboard = () => {
   }
 
   const [rowData, setrowData] = useState<any>([]); 
+  const [allFlag, setallFlage] = useState<any>([]);
 
-//   const [columnDefs, setColumnDefs] = useState([
-//     { field: 'athlete' },
-//     { field: 'sport' },
-//     { field: 'age' },
-// ]);
+  useEffect(() => {
+    fetch('https://www.ag-grid.com/example-assets/small-olympic-winners.json')
+      .then((resp) => resp.json())
+      .then((data) => {
+        // console.log(data);
+        setrowData(data);
+        
+      });
+  }, []);
+
+  useEffect(() => {
+    // console.log(allFlag);
+
+    if(allFlag)
+    {
+
+    }
+
+  }, [allFlag]);
+
   const [columnDefs, setColumnDefs] = useState<ColDef<ICode>[]>([
     { 
       field: "chk" , 
       cellRenderer : 'checkboxrenderer',
+      // headerCheckboxSelection : true,
+      // checkboxSelection : true,
+      headerComponent : 'checkboxrenderer',
+      headerComponentParams : {
+        setallFlage : setallFlage
+      }
     },
     { field: "year", 
       minWidth: 50,
@@ -64,17 +86,6 @@ const Dashboard = () => {
     }
   ]);
 
-
-  useEffect(() => {
-    fetch('https://www.ag-grid.com/example-assets/small-olympic-winners.json')
-      .then((resp) => resp.json())
-      .then((data) => {
-        // console.log(data);
-        setrowData(data);
-        
-      });
-  }, []);
-
   const onGridReady = useCallback((params) => {
    
   }, []);
@@ -95,10 +106,19 @@ const Dashboard = () => {
     };
   }, []);
 
+  const click = () => {
+    console.log(rowData);
+  }
+
   return (
     // <>{JSON.stringify(rowdatas)}</>
     <div>
-      <Grid  rowData={rowData} columnDefs={columnDefs} onGridReady={onGridReady} cellClickedListener={cellClickedListener} defaultColDef={defaultColDef} />
+      {/* <div>
+        <Button onClick={click}>test</Button>
+      </div> */}
+      <div>
+        <CMMGrid  rowData={rowData} columnDefs={columnDefs} onGridReady={onGridReady} cellClickedListener={cellClickedListener} defaultColDef={defaultColDef} />
+      </div>
     </div>
   );
 };

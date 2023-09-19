@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useMemo,
   useCallback,
+  forwardRef
 } from "react";
 import { AgGridReact } from "ag-grid-react"; // the AG Grid React Component
 
@@ -15,8 +16,10 @@ import CheckBoxForGrid from "src/component/Grid/CheckBoxForGrid";
 import DatePickerForGrid from "src/component/Grid/DatePickerForGrid";
 import ImageForGrid from "src/component/Grid/ImageForGrid";
 
-const Grid = ( props ) => {
 
+const CMMGrid = forwardRef<any, any>((props, ref) => {
+
+  // const gridRef = props.ref;
   const gridStyle = useMemo(() => ({ height: 676, width: "100%" }), []);
 
   const components = useMemo(() => {
@@ -37,17 +40,20 @@ const Grid = ( props ) => {
     <div>
       <div style={gridStyle} className="ag-theme-alpine">
          <AgGridReact
+          ref={ref}
           rowData={props.rowData}
           columnDefs={props.columnDefs}
           defaultColDef={props.defaultColDef}
           onGridReady={props.onGridReady}    
           isRowSelectable={props.isRowSelectable}
           components={components}
-          onCellClicked={props.cellClickedListener} 
+          animateRows= {props.animateRows}
+          onCellClicked={props.onCellClicked} 
+          onCellValueChanged={props.onCellValueChanged}
         />
       </div>
     </div>
   );
-};
+});
 
-export default Grid;
+export default CMMGrid;

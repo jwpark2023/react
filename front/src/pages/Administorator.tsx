@@ -24,7 +24,7 @@ import {
 import type { TreeProps } from "antd/es/tree";
 import dayjs from "dayjs";
 import { Key } from "antd/es/table/interface";
-import Grid from "src/component/Grid/Grid";
+import Grid from "src/component/Grid/CMMGrid";
 
 const dateFormat = "YYYY-MM-DD";
 

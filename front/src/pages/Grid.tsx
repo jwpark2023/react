@@ -6,6 +6,7 @@ import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 
 import { request } from "src/utils/axios";
+import CMMGrid  from "src/component/Grid/CMMGrid";
 
 import { DownOutlined } from "@ant-design/icons";
 import {
@@ -76,6 +77,7 @@ const Grid = () => {
 
   // Each Column Definition results in one Column.
   const [columnDefs, setColumnDefs] = useState<ColDef<any>[]>([
+    { field: "chk" , width:20, cellRenderer : 'checkboxrenderer' },
     { field: "CRUD_FLAG", headerName: "", width: 20 },
     { field: "P_CODE_NM", headerName: "분류", width: 120 },
     { field: "CODE_CD", headerName: "코드", width: 120 },
@@ -224,24 +226,42 @@ const Grid = () => {
   };
 
   const handleBtnDelete = (e) => {
-    if (
-      gridRef.current?.api.getSelectedNodes() &&
-      gridRef.current?.api.getSelectedNodes().length < 1
-    ) {
-      message.warning("삭제할 행을 선택하세요.");
-      return;
-    }
 
-    let currNode = gridRef.current?.api.getSelectedNodes()[0];
+    console.log(gridRef.current);
+    gridRef.current?.api.forEachNode((node) => {
 
-    if (!["C"].includes(currNode?.data.CRUD_FLAG)) {
-      message.warning(
-        "저장된 행은 삭제할 수 없습니다.\n 사용유무를 변경하세요"
-      );
-      return;
-    }
+      if(gridRef.current?.api.getValue("chk", node) == "true")
+      {
+        if(gridRef.current?.api.getValue("CRUD_FLAG", node) == "C")
+        {
+          message.warning(
+            "저장하지 않은 행은 삭제 할 수 없습니다."
+          );
+          return;
+        }
+        node.setDataValue("CRUD_FLAG", "D");
+      }
+    });
 
-    currNode?.setDataValue("CRUD_FLAG", "D");
+
+    // if (
+    //   gridRef.current?.api.getSelectedNodes() &&
+    //   gridRef.current?.api.getSelectedNodes().length < 1
+    // ) {
+    //   message.warning("삭제할 행을 선택하세요.");
+    //   return;
+    // }
+
+    // let currNode = gridRef.current?.api.getSelectedNodes()[0];
+
+    // if (!["C"].includes(currNode?.data.CRUD_FLAG)) {
+    //   message.warning(
+    //     "저장된 행은 삭제할 수 없습니다.\n 사용유무를 변경하세요"
+    //   );
+    //   return;
+    // }
+
+    // currNode?.setDataValue("CRUD_FLAG", "D");
   };
 
   const handleBtnSave = (e) => {
@@ -283,7 +303,7 @@ const Grid = () => {
   };
 
   const onCellValueChanged = (e) => {
-    // console.log("onCellValueChanged:", e);
+    console.log("onCellValueChanged:", e);
     if (!["C", "D"].includes(e.node.data.CRUD_FLAG)) {
       e.node.setDataValue("CRUD_FLAG", "U");
     }
@@ -423,7 +443,7 @@ const Grid = () => {
             className="ag-theme-alpine"
             style={{ width: "100%", height: 676 }}
           >
-            <AgGridReact
+            <CMMGrid
               ref={gridRef} // Ref for accessing Grid's API
               rowData={rowData} // Row Data for Rows
               columnDefs={columnDefs} // Column Defs for Columns
