@@ -198,7 +198,7 @@ const Grid = () => {
 
           if(result.dataSet.length > 0 )
           {
-            let convData = result.dataSet.map(data => data = {...data, PERIOD: [dayjs(data.EXP_FR_DT, 'YYYY-MM-DD'), dayjs(data.EXP_TO_DT, 'YYYY-MM-DD')] });
+            let convData = result.dataSet.map(data => data = {...data, PERIOD: [data.EXP_FR_DT,data.EXP_TO_DT] });
             gridRef.current?.api.setRowData(convData);
           }
 
@@ -266,8 +266,8 @@ const Grid = () => {
     gridRef.current?.api.forEachNode((node) => {
       if (["C", "U","D"].includes(node?.data.CRUD_FLAG)) {
         console.log(node.data);
-        node.data.EXP_FR_DT = node.data.PERIOD[0].format(dateFormat);
-        node.data.EXP_TO_DT = node.data.PERIOD[1].format(dateFormat);
+        node.data.EXP_FR_DT = node.data.PERIOD[0];
+        node.data.EXP_TO_DT = node.data.PERIOD[1];
         delete node.data.PERIOD;
         data.push(node?.data);
       }
