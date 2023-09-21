@@ -271,8 +271,8 @@ const Grid = () => {
     let data: any[] = [];
     gridRef.current?.api.forEachNode((node) => {
       if (["C", "U","D"].includes(node?.data.CRUD_FLAG)) {
-        node.data.EXP_FR_DT = node.data.PERIOD[0];
-        node.data.EXP_TO_DT = node.data.PERIOD[1];
+        node.data.EXP_FR_DT = node.data.PERIOD[0].format(("YYYY-MM-DD"));
+        node.data.EXP_TO_DT = node.data.PERIOD[1].format(("YYYY-MM-DD"));
         delete node.data.PERIOD;
         data.push(node?.data);
       }
