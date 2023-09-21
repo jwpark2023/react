@@ -78,7 +78,7 @@ const Grid = () => {
 
   // Each Column Definition results in one Column.
   const [columnDefs, setColumnDefs] = useState<ColDef<any>[]>([
-    { field: "chk" , width:20, cellRenderer : 'checkboxrenderer' },
+    // { field: "chk" , width:20, cellRenderer : 'checkboxrenderer' },
     { field: "CRUD_FLAG", headerName: "", width: 20 },
     { field: "P_CODE_NM", headerName: "분류", width: 120 },
     { field: "CODE_CD", headerName: "코드", width: 120 },
@@ -87,7 +87,7 @@ const Grid = () => {
     { field: "P_CODE_CD", hide: true },
     { field: "DSP_ORDER", headerName: "", hide: true },
     { field: "USE_YN", headerName: "사용" },
-    { field: "ATTR1_VAL", headerName: "속성1" },
+    { field: "ATTR1_VAL", headerName: "속성1", cellRenderer : 'selectboxrenderer' },
     { field: "ATTR2_VAL", headerName: "속성2" },
     { field: "ATTR3_VAL", headerName: "속성3" },
     { field: "ATTR4_VAL", headerName: "속성4" },
@@ -191,12 +191,16 @@ const Grid = () => {
               type: "error",
               content: "조회된 정보가 없습니다.",
             });
+            
             // setRowData(undefined);
             return;
           }
-          // setRowData(result.dataSet);
-          gridRef.current?.api.setRowData(result.dataSet);
-          convertPeriodDT();
+
+          if(result.dataSet.length > 0 )
+          {
+            let convData = result.dataSet.map(data => data = {...data, PERIOD: [dayjs(data.EXP_FR_DT, 'YYYY-MM-DD'), dayjs(data.EXP_TO_DT, 'YYYY-MM-DD')] });
+            gridRef.current?.api.setRowData(convData);
+          }
 
         });
       })
@@ -210,16 +214,6 @@ const Grid = () => {
     getTreeData();
     initFormValues();
   }, []);
-
-  const convertPeriodDT = () => {
-
-    gridRef.current?.api.forEachNode((node) => {
-        node.data.PERIOD = [dayjs(node.data.EXP_FR_DT, 'YYYY-MM-DD'), dayjs(node.data.EXP_TO_DT, 'YYYY-MM-DD')];
-        delete node.data.EXP_FR_DT;
-        delete node.data.EXP_TO_DT;
-    });
-
-  }
 
   // Example using Grid's API
   const buttonListener = useCallback((e) => {
@@ -271,8 +265,9 @@ const Grid = () => {
     let data: any[] = [];
     gridRef.current?.api.forEachNode((node) => {
       if (["C", "U","D"].includes(node?.data.CRUD_FLAG)) {
-        node.data.EXP_FR_DT = node.data.PERIOD[0].format(("YYYY-MM-DD"));
-        node.data.EXP_TO_DT = node.data.PERIOD[1].format(("YYYY-MM-DD"));
+        console.log(node.data);
+        node.data.EXP_FR_DT = node.data.PERIOD[0].format(dateFormat);
+        node.data.EXP_TO_DT = node.data.PERIOD[1].format(dateFormat);
         delete node.data.PERIOD;
         data.push(node?.data);
       }

@@ -15,6 +15,7 @@ import ButtonForGrid from "src/component/Grid/ButtonForGrid";
 import CheckBoxForGrid from "src/component/Grid/CheckBoxForGrid";
 import DatePickerForGrid from "src/component/Grid/DatePickerForGrid";
 import ImageForGrid from "src/component/Grid/ImageForGrid";
+import SelectBoxForGrid from "src/component/Grid/SelectBoxForGrid";
 
 
 const CMMGrid = forwardRef<any, any>((props, ref) => {
@@ -27,7 +28,8 @@ const CMMGrid = forwardRef<any, any>((props, ref) => {
       buttonrenderer : ButtonForGrid,
       checkboxrenderer : CheckBoxForGrid,
       datepickerrenderer : DatePickerForGrid,
-      imagerenderer : ImageForGrid
+      imagerenderer : ImageForGrid,
+      selectboxrenderer : SelectBoxForGrid
     };
   }, []);
 
