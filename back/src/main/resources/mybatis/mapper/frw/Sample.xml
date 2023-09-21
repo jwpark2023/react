@@ -136,9 +136,9 @@
                     , #{item.ATTR10_VAL}               
                 );
             </when>
-             <when test='item.CRUD_FLAG == "D"'>
+             <!--<when test='item.CRUD_FLAG == "D"'>
 				DELETE FROM CMN_CODE WHERE CODE_CD = #{item.CODE_CD}; 
-			 </when>
+			 </when>-->
             <otherwise>
                 UPDATE CMN_CODE
                    SET CODE_NM = #{item.CODE_NM}
