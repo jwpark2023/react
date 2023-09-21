@@ -6,7 +6,7 @@ import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 
 import { request } from "src/utils/axios";
-import CMMGrid  from "src/component/Grid/CMMGrid";
+import CMMGrid from "src/component/Grid/CMMGrid";
 
 import { DownOutlined } from "@ant-design/icons";
 import {
@@ -34,6 +34,7 @@ const arrayToTree = (arr, parent) =>
   arr
     .filter((item) => item.P_CODE_CD === parent)
     .map((child) => ({
+      ...child,
       title: child.CODE_NM,
       key: child.CODE_CD,
       children: arrayToTree(arr, child.CODE_CD),
@@ -86,8 +87,12 @@ const Grid = () => {
     { field: "CODE_LVL", hide: true },
     { field: "P_CODE_CD", hide: true },
     { field: "DSP_ORDER", headerName: "", hide: true },
-    { field: "USE_YN", headerName: "사용", cellRenderer : 'checkboxrenderer' },
-    { field: "ATTR1_VAL", headerName: "속성1", cellRenderer : 'selectboxrenderer' },
+    { field: "USE_YN", headerName: "사용", cellRenderer: "checkboxrenderer" },
+    {
+      field: "ATTR1_VAL",
+      headerName: "속성1",
+      cellRenderer: "selectboxrenderer",
+    },
     { field: "ATTR2_VAL", headerName: "속성2" },
     { field: "ATTR3_VAL", headerName: "속성3" },
     { field: "ATTR4_VAL", headerName: "속성4" },
@@ -97,12 +102,15 @@ const Grid = () => {
     { field: "ATTR8_VAL", headerName: "속성8" },
     { field: "ATTR9_VAL", headerName: "속성9" },
     { field: "ATTR10_VAL", headerName: "속성10" },
-    { field: "PERIOD", headerName: "기간", width: 300, 
-      cellRenderer : 'datepickerrenderer',
+    {
+      field: "PERIOD",
+      headerName: "기간",
+      width: 300,
+      cellRenderer: "datepickerrenderer",
       cellRendererParams: {
-      range : true,
-      format : 'YYYY-MM-DD',
-     },
+        range: true,
+        format: "YYYY-MM-DD",
+      },
     },
     // { field: "EXP_TO_DT", headerName: "종료일", width: 200, cellRenderer : 'datepickerrenderer' },
     { field: "ATTR1_JSON", headerName: "속성1 명" },
@@ -175,7 +183,6 @@ const Grid = () => {
   };
 
   const searchCodelist = () => {
-    
     form
       .validateFields()
       .then((fields) => {
@@ -224,17 +231,11 @@ const Grid = () => {
   };
 
   const handleBtnDelete = (e) => {
-
     console.log(gridRef.current);
     gridRef.current?.api.forEachNode((node) => {
-
-      if(gridRef.current?.api.getValue("chk", node) == "true")
-      {
-        if(gridRef.current?.api.getValue("CRUD_FLAG", node) == "C")
-        {
-          message.warning(
-            "저장하지 않은 행은 삭제 할 수 없습니다."
-          );
+      if (gridRef.current?.api.getValue("chk", node) == "true") {
+        if (gridRef.current?.api.getValue("CRUD_FLAG", node) == "C") {
+          message.warning("저장하지 않은 행은 삭제 할 수 없습니다.");
           return;
         }
         node.setDataValue("CRUD_FLAG", "D");
@@ -242,13 +243,12 @@ const Grid = () => {
     });
 
     // console.log(rowData);
-
   };
 
   const handleBtnSave = (e) => {
     let data: any[] = [];
     gridRef.current?.api.forEachNode((node) => {
-      if (["C", "U","D"].includes(node?.data.CRUD_FLAG)) {
+      if (["C", "U", "D"].includes(node?.data.CRUD_FLAG)) {
         console.log(node.data);
         node.data.EXP_FR_DT = node.data.PERIOD[0];
         node.data.EXP_TO_DT = node.data.PERIOD[1];
@@ -272,7 +272,12 @@ const Grid = () => {
   const onTreeNodeSelect: TreeProps["onSelect"] = (keys, info) => {
     setSelectedKeys(keys);
     setSelectedNode(info.node);
+    updateColDef(info.node);
     getCodelist({ P_CODE_CD: keys[0] });
+  };
+
+  const updateColDef = (node) => {
+    console.log("updateColDef:", node);
   };
 
   const getCodelist = (params: any) => {
@@ -284,14 +289,16 @@ const Grid = () => {
         });
         return;
       }
-  
+
       if (result.dataSet.length > 0) {
-        let convData = result.dataSet.map(data => data = { ...data, PERIOD: [data.EXP_FR_DT, data.EXP_TO_DT] });
+        let convData = result.dataSet.map(
+          (data) =>
+            (data = { ...data, PERIOD: [data.EXP_FR_DT, data.EXP_TO_DT] })
+        );
         gridRef.current?.api.setRowData(convData);
       }
-  
     });
-  }
+  };
 
   const onCellValueChanged = (e) => {
     console.log("onCellValueChanged:", e);
@@ -451,5 +458,3 @@ const Grid = () => {
 };
 
 export default Grid;
-
-
