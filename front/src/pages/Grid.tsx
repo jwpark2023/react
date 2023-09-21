@@ -86,7 +86,7 @@ const Grid = () => {
     { field: "CODE_LVL", hide: true },
     { field: "P_CODE_CD", hide: true },
     { field: "DSP_ORDER", headerName: "", hide: true },
-    { field: "USE_YN", headerName: "사용" },
+    { field: "USE_YN", headerName: "사용", cellRenderer : 'checkboxrenderer' },
     { field: "ATTR1_VAL", headerName: "속성1", cellRenderer : 'selectboxrenderer' },
     { field: "ATTR2_VAL", headerName: "속성2" },
     { field: "ATTR3_VAL", headerName: "속성3" },
@@ -174,7 +174,8 @@ const Grid = () => {
     });
   };
 
-  const getCodeList = () => {
+  const searchCodelist = () => {
+    
     form
       .validateFields()
       .then((fields) => {
@@ -185,24 +186,7 @@ const Grid = () => {
             fields.PERIOD[1].format(dateFormat),
           ],
         };
-        request("post", "/sample/codeList", params).then((result) => {
-          if (result.code != "S0000001" || result.dataSet.length < 1) {
-            messageApi.open({
-              type: "error",
-              content: "조회된 정보가 없습니다.",
-            });
-            
-            // setRowData(undefined);
-            return;
-          }
-
-          if(result.dataSet.length > 0 )
-          {
-            let convData = result.dataSet.map(data => data = {...data, PERIOD: [data.EXP_FR_DT,data.EXP_TO_DT] });
-            gridRef.current?.api.setRowData(convData);
-          }
-
-        });
+        getCodelist(params);
       })
       .catch((e) => {
         console.log("validateFields: ", e);
@@ -268,7 +252,6 @@ const Grid = () => {
         console.log(node.data);
         node.data.EXP_FR_DT = node.data.PERIOD[0];
         node.data.EXP_TO_DT = node.data.PERIOD[1];
-        delete node.data.PERIOD;
         data.push(node?.data);
       }
       console.log(data);
@@ -282,29 +265,33 @@ const Grid = () => {
         });
       }
       getTreeData();
-      getCodeList();
+      searchCodelist();
     });
   };
 
   const onTreeNodeSelect: TreeProps["onSelect"] = (keys, info) => {
     setSelectedKeys(keys);
     setSelectedNode(info.node);
-    request("post", "/sample/codeList", { P_CODE_CD: keys[0] }).then(
-      (result) => {
-        if (result.code != "S0000001" || result.dataSet.length < 1) {
-          messageApi.open({
-            type: "error",
-            content: "조회된 정보가 없습니다.",
-          });
-          // gridRef.current?.api.setRowData(null);
-          //setRowData(undefined);
-          return;
-        }
-        gridRef.current?.api.setRowData(result.dataSet);
-        // setRowData(result.dataSet);
-      }
-    );
+    getCodelist({ P_CODE_CD: keys[0] });
   };
+
+  const getCodelist = (params: any) => {
+    request("post", "/sample/codeList", params).then((result) => {
+      if (result.code != "S0000001" || result.dataSet.length < 1) {
+        messageApi.open({
+          type: "error",
+          content: "조회된 정보가 없습니다.",
+        });
+        return;
+      }
+  
+      if (result.dataSet.length > 0) {
+        let convData = result.dataSet.map(data => data = { ...data, PERIOD: [data.EXP_FR_DT, data.EXP_TO_DT] });
+        gridRef.current?.api.setRowData(convData);
+      }
+  
+    });
+  }
 
   const onCellValueChanged = (e) => {
     console.log("onCellValueChanged:", e);
@@ -330,7 +317,7 @@ const Grid = () => {
             padding: "12px",
             borderRadius: "5px",
           }}
-          onKeyUp={(e) => e.key === "Enter" && getCodeList()}
+          onKeyUp={(e) => e.key === "Enter" && searchCodelist()}
         >
           <Row gutter={24}>
             <Col span={5}>
@@ -365,7 +352,7 @@ const Grid = () => {
               <Button
                 type="primary"
                 style={{ width: "100%" }}
-                onClick={getCodeList}
+                onClick={searchCodelist}
               >
                 조회
               </Button>
@@ -464,3 +451,5 @@ const Grid = () => {
 };
 
 export default Grid;
+
+
