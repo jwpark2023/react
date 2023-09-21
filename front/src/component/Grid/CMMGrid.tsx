@@ -41,7 +41,7 @@ const CMMGrid = forwardRef<any, any>((props, ref) => {
       <div style={gridStyle} className="ag-theme-alpine">
          <AgGridReact
           ref={ref}
-          rowData={props.rowData}
+          // rowData={props.rowData}
           columnDefs={props.columnDefs}
           defaultColDef={props.defaultColDef}
           onGridReady={props.onGridReady}    

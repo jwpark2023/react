@@ -72,8 +72,9 @@ const defaultRow = {
 
 const Grid = () => {
   const gridRef = useRef<AgGridReact<any>>(null);
-  const [rowData, setRowData] = useState(); // Set rowData to Array of Objects, one Object per Row
+  // const [rowData, setRowData] = useState<any>(); // Set rowData to Array of Objects, one Object per Row
   const [messageApi, contextHolder] = message.useMessage();
+  const [period, setPeriod] = useState();
 
   // Each Column Definition results in one Column.
   const [columnDefs, setColumnDefs] = useState<ColDef<any>[]>([
@@ -96,8 +97,14 @@ const Grid = () => {
     { field: "ATTR8_VAL", headerName: "속성8" },
     { field: "ATTR9_VAL", headerName: "속성9" },
     { field: "ATTR10_VAL", headerName: "속성10" },
-    { field: "EXP_FR_DT", headerName: "시작일", width: 200, cellRenderer : 'datepickerrenderer' },
-    { field: "EXP_TO_DT", headerName: "종료일", width: 200, cellRenderer : 'datepickerrenderer' },
+    { field: "PERIOD", headerName: "기간", width: 300, 
+      cellRenderer : 'datepickerrenderer',
+      cellRendererParams: {
+      range : true,
+      format : 'YYYY-MM-DD',
+     },
+    },
+    // { field: "EXP_TO_DT", headerName: "종료일", width: 200, cellRenderer : 'datepickerrenderer' },
     { field: "ATTR1_JSON", headerName: "속성1 명" },
     { field: "ATTR2_JSON", headerName: "속성2 명" },
     { field: "ATTR3_JSON", headerName: "속성3 명" },
@@ -184,10 +191,13 @@ const Grid = () => {
               type: "error",
               content: "조회된 정보가 없습니다.",
             });
-            setRowData(undefined);
+            // setRowData(undefined);
             return;
           }
-          setRowData(result.dataSet);
+          // setRowData(result.dataSet);
+          gridRef.current?.api.setRowData(result.dataSet);
+          convertPeriodDT();
+
         });
       })
       .catch((e) => {
@@ -201,13 +211,15 @@ const Grid = () => {
     initFormValues();
   }, []);
 
-  // useEffect(() => {
-  //   gridRef.current?.api.forEachNode((node) => {
-  //     // node.setDataValue("EXP_FR_DT", "D");
-  //     //   node.setDataValue("EXP_FR_DT", "D");
-  //     console.log(gridRef.current?.api.getValue("EXP_FR_DT", node));
-  //   });
-  // }, [rowData]);
+  const convertPeriodDT = () => {
+
+    gridRef.current?.api.forEachNode((node) => {
+        node.data.PERIOD = [dayjs(node.data.EXP_FR_DT, 'YYYY-MM-DD'), dayjs(node.data.EXP_TO_DT, 'YYYY-MM-DD')];
+        delete node.data.EXP_FR_DT;
+        delete node.data.EXP_TO_DT;
+    });
+
+  }
 
   // Example using Grid's API
   const buttonListener = useCallback((e) => {
@@ -259,8 +271,12 @@ const Grid = () => {
     let data: any[] = [];
     gridRef.current?.api.forEachNode((node) => {
       if (["C", "U","D"].includes(node?.data.CRUD_FLAG)) {
+        node.data.EXP_FR_DT = node.data.PERIOD[0];
+        node.data.EXP_TO_DT = node.data.PERIOD[1];
+        delete node.data.PERIOD;
         data.push(node?.data);
       }
+      console.log(data);
     });
 
     request("post", "/sample/saveCodeList", data).then((result) => {
@@ -285,10 +301,12 @@ const Grid = () => {
             type: "error",
             content: "조회된 정보가 없습니다.",
           });
-          setRowData(undefined);
+          // gridRef.current?.api.setRowData(null);
+          //setRowData(undefined);
           return;
         }
-        setRowData(result.dataSet);
+        gridRef.current?.api.setRowData(result.dataSet);
+        // setRowData(result.dataSet);
       }
     );
   };
@@ -436,7 +454,7 @@ const Grid = () => {
           >
             <CMMGrid
               ref={gridRef} // Ref for accessing Grid's API
-              rowData={rowData} // Row Data for Rows
+              // rowData={rowData} // Row Data for Rows
               columnDefs={columnDefs} // Column Defs for Columns
               defaultColDef={defaultColDef} // Default Column Properties
               animateRows={true} // Optional - set to 'true' to have rows animate when sorted

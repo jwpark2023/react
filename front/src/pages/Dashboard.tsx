@@ -66,7 +66,7 @@ const Dashboard = () => {
       minWidth: 200,
       cellRenderer : 'datepickerrenderer',
       cellRendererParams: {
-        range : false,
+        range : true,
         defaultValue: dayjs('2015/01/01', 'YYYY/MM/DD'),
         format : 'YYYY/MM/DD'
       },
