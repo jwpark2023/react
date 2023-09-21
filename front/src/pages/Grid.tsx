@@ -6,7 +6,7 @@ import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 
 import { request } from "src/utils/axios";
-import CMMGrid  from "src/component/Grid/CMMGrid";
+import CMMGrid from "src/component/Grid/CMMGrid";
 
 import { DownOutlined } from "@ant-design/icons";
 import {
@@ -34,6 +34,7 @@ const arrayToTree = (arr, parent) =>
   arr
     .filter((item) => item.P_CODE_CD === parent)
     .map((child) => ({
+      ...child,
       title: child.CODE_NM,
       key: child.CODE_CD,
       children: arrayToTree(arr, child.CODE_CD),
@@ -78,7 +79,7 @@ const Grid = () => {
 
   // Each Column Definition results in one Column.
   const [columnDefs, setColumnDefs] = useState<ColDef<any>[]>([
-    { field: "chk" , width:20, cellRenderer : 'checkboxrenderer' },
+    { field: "chk", width: 20, cellRenderer: "checkboxrenderer" },
     { field: "CRUD_FLAG", headerName: "", width: 20 },
     { field: "P_CODE_NM", headerName: "분류", width: 120 },
     { field: "CODE_CD", headerName: "코드", width: 120 },
@@ -97,12 +98,15 @@ const Grid = () => {
     { field: "ATTR8_VAL", headerName: "속성8" },
     { field: "ATTR9_VAL", headerName: "속성9" },
     { field: "ATTR10_VAL", headerName: "속성10" },
-    { field: "PERIOD", headerName: "기간", width: 300, 
-      cellRenderer : 'datepickerrenderer',
+    {
+      field: "PERIOD",
+      headerName: "기간",
+      width: 300,
+      cellRenderer: "datepickerrenderer",
       cellRendererParams: {
-      range : true,
-      format : 'YYYY-MM-DD',
-     },
+        range: true,
+        format: "YYYY-MM-DD",
+      },
     },
     // { field: "EXP_TO_DT", headerName: "종료일", width: 200, cellRenderer : 'datepickerrenderer' },
     { field: "ATTR1_JSON", headerName: "속성1 명" },
@@ -197,7 +201,6 @@ const Grid = () => {
           // setRowData(result.dataSet);
           gridRef.current?.api.setRowData(result.dataSet);
           convertPeriodDT();
-
         });
       })
       .catch((e) => {
@@ -212,14 +215,15 @@ const Grid = () => {
   }, []);
 
   const convertPeriodDT = () => {
-
     gridRef.current?.api.forEachNode((node) => {
-        node.data.PERIOD = [dayjs(node.data.EXP_FR_DT, 'YYYY-MM-DD'), dayjs(node.data.EXP_TO_DT, 'YYYY-MM-DD')];
-        delete node.data.EXP_FR_DT;
-        delete node.data.EXP_TO_DT;
+      node.data.PERIOD = [
+        dayjs(node.data.EXP_FR_DT, "YYYY-MM-DD"),
+        dayjs(node.data.EXP_TO_DT, "YYYY-MM-DD"),
+      ];
+      delete node.data.EXP_FR_DT;
+      delete node.data.EXP_TO_DT;
     });
-
-  }
+  };
 
   // Example using Grid's API
   const buttonListener = useCallback((e) => {
@@ -246,17 +250,11 @@ const Grid = () => {
   };
 
   const handleBtnDelete = (e) => {
-
     console.log(gridRef.current);
     gridRef.current?.api.forEachNode((node) => {
-
-      if(gridRef.current?.api.getValue("chk", node) == "true")
-      {
-        if(gridRef.current?.api.getValue("CRUD_FLAG", node) == "C")
-        {
-          message.warning(
-            "저장하지 않은 행은 삭제 할 수 없습니다."
-          );
+      if (gridRef.current?.api.getValue("chk", node) == "true") {
+        if (gridRef.current?.api.getValue("CRUD_FLAG", node) == "C") {
+          message.warning("저장하지 않은 행은 삭제 할 수 없습니다.");
           return;
         }
         node.setDataValue("CRUD_FLAG", "D");
@@ -264,15 +262,14 @@ const Grid = () => {
     });
 
     // console.log(rowData);
-
   };
 
   const handleBtnSave = (e) => {
     let data: any[] = [];
     gridRef.current?.api.forEachNode((node) => {
-      if (["C", "U","D"].includes(node?.data.CRUD_FLAG)) {
-        node.data.EXP_FR_DT = node.data.PERIOD[0].format(("YYYY-MM-DD"));
-        node.data.EXP_TO_DT = node.data.PERIOD[1].format(("YYYY-MM-DD"));
+      if (["C", "U", "D"].includes(node?.data.CRUD_FLAG)) {
+        node.data.EXP_FR_DT = node.data.PERIOD[0].format("YYYY-MM-DD");
+        node.data.EXP_TO_DT = node.data.PERIOD[1].format("YYYY-MM-DD");
         delete node.data.PERIOD;
         data.push(node?.data);
       }
@@ -305,10 +302,15 @@ const Grid = () => {
           //setRowData(undefined);
           return;
         }
+        updateColDef(info.node);
         gridRef.current?.api.setRowData(result.dataSet);
         // setRowData(result.dataSet);
       }
     );
+  };
+
+  const updateColDef = (node) => {
+    console.log("updateColDef:", node);
   };
 
   const onCellValueChanged = (e) => {
