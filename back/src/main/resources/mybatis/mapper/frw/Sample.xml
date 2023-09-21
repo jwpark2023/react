@@ -18,6 +18,15 @@
              , EXP_FR_DT
              , EXP_TO_DT
              , USE_YN
+             , ATTR2_JSON
+             , ATTR3_JSON
+             , ATTR4_JSON
+             , ATTR5_JSON
+             , ATTR6_JSON
+             , ATTR7_JSON
+             , ATTR8_JSON
+             , ATTR9_JSON
+             , ATTR10_JSON
           FROM CMN_CODE
          ORDER BY P_CODE_CD, DSP_ORDER
     </select>
