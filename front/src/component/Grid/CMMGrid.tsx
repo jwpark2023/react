@@ -4,7 +4,7 @@ import React, {
   useEffect,
   useMemo,
   useCallback,
-  forwardRef
+  forwardRef,
 } from "react";
 import { AgGridReact } from "ag-grid-react"; // the AG Grid React Component
 
@@ -17,41 +17,30 @@ import DatePickerForGrid from "src/component/Grid/DatePickerForGrid";
 import ImageForGrid from "src/component/Grid/ImageForGrid";
 import SelectBoxForGrid from "src/component/Grid/SelectBoxForGrid";
 
-
 const CMMGrid = forwardRef<any, any>((props, ref) => {
-
   // const gridRef = props.ref;
   const gridStyle = useMemo(() => ({ height: 676, width: "100%" }), []);
 
   const components = useMemo(() => {
     return {
-      buttonrenderer : ButtonForGrid,
-      checkboxrenderer : CheckBoxForGrid,
-      datepickerrenderer : DatePickerForGrid,
-      imagerenderer : ImageForGrid,
-      selectboxrenderer : SelectBoxForGrid
+      buttonrenderer: ButtonForGrid,
+      checkboxrenderer: CheckBoxForGrid,
+      datepickerrenderer: DatePickerForGrid,
+      imagerenderer: ImageForGrid,
+      selectboxrenderer: SelectBoxForGrid,
     };
   }, []);
 
-  useEffect(() => {
-
-  }, []);
-
+  useEffect(() => {}, []);
 
   return (
     <div>
       <div style={gridStyle} className="ag-theme-alpine">
-         <AgGridReact
+        <AgGridReact
+          {...props}
           ref={ref}
-          // rowData={props.rowData}
-          columnDefs={props.columnDefs}
-          defaultColDef={props.defaultColDef}
-          onGridReady={props.onGridReady}    
-          isRowSelectable={props.isRowSelectable}
           components={components}
-          animateRows= {props.animateRows}
-          onCellClicked={props.onCellClicked} 
-          onCellValueChanged={props.onCellValueChanged}
+          stopEditingWhenCellsLoseFocus={true}
         />
       </div>
     </div>
