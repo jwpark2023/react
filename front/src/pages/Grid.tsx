@@ -25,6 +25,8 @@ import {
 import type { DataNode, TreeProps } from "antd/es/tree";
 import dayjs from "dayjs";
 import { Key } from "antd/es/table/interface";
+// import Modal from "src/pages/modal";
+import Modal from "react-modal";
 
 const dateFormat = "YYYY-MM-DD";
 
@@ -74,9 +76,27 @@ const defaultRow = {
 const Grid = () => {
   const gridRef = useRef<AgGridReact<any>>(null);
   const [messageApi, contextHolder] = message.useMessage();
+  const [modalOpen, setModalOpen] = useState(false);
+  // const [period, setPeriod] = useState();
+
+  const crudStyle = (params) => {
+    if (params.value === "U") {
+      return { color: "orange", backgroundColor: "orange" };
+    } else if (params.value === "C") {
+      return { color: "blue", backgroundColor: "blue" };
+    } else if (params.value === "D") {
+      return { color: "red", backgroundColor: "red" };
+    }
+  };
 
   const [columnDefs, setColumnDefs] = useState<ColDef<any>[]>([
-    { field: "CRUD_FLAG", headerName: "", maxWidth: 20 },
+    // { field: "CRUD_FLAG", headerName: "", maxWidth: 20 },
+    {
+      field: "CRUD_FLAG",
+      headerName: "",
+      width: 5,
+      cellStyle: crudStyle,
+    },
     { field: "P_CODE_NM", headerName: "분류", minWidth: 120 },
     { field: "CODE_CD", headerName: "코드", minWidth: 120, flex: 1 },
     { field: "CODE_NM", headerName: "코드명", minWidth: 120, flex: 1 },
@@ -100,6 +120,29 @@ const Grid = () => {
     { field: "ATTR8_VAL", headerName: "속성8", minWidth: 80 },
     { field: "ATTR9_VAL", headerName: "속성9", minWidth: 80 },
     { field: "ATTR10_VAL", headerName: "속성10", minWidth: 80 },
+    // {
+    //   field: "CRUD_FLAG",
+    //   headerName: "",
+    //   width: 5,
+    //   cellStyle: crudStyle,
+    // },
+    { field: "P_CODE_NM", headerName: "분류", width: 120 },
+    { field: "CODE_CD", headerName: "코드", width: 120 },
+    { field: "CODE_NM", headerName: "코드명", width: 120 },
+    { field: "CODE_LVL", hide: true },
+    { field: "P_CODE_CD", hide: true },
+    { field: "DSP_ORDER", headerName: "", hide: true },
+    { field: "USE_YN", headerName: "사용", cellRenderer: "checkboxrenderer" },
+    { field: "ATTR1_VAL", headerName: "속성1" },
+    { field: "ATTR2_VAL", headerName: "속성2" },
+    { field: "ATTR3_VAL", headerName: "속성3" },
+    { field: "ATTR4_VAL", headerName: "속성4" },
+    { field: "ATTR5_VAL", headerName: "속성5" },
+    { field: "ATTR6_VAL", headerName: "속성6" },
+    { field: "ATTR7_VAL", headerName: "속성7" },
+    { field: "ATTR8_VAL", headerName: "속성8" },
+    { field: "ATTR9_VAL", headerName: "속성9" },
+    { field: "ATTR10_VAL", headerName: "속성10" },
     {
       field: "PERIOD",
       headerName: "기간",
@@ -127,7 +170,6 @@ const Grid = () => {
   // DefaultColDef sets props common to all Columns
   const defaultColDef = useMemo(
     () => ({
-      width: 100,
       sortable: true,
       editable: true,
       resizable: true,
@@ -150,9 +192,9 @@ const Grid = () => {
   const [selectedNode, setSelectedNode] = useState<DataNode>();
 
   // Example of consuming Grid Event
-  const cellClickedListener = useCallback((event) => {
-    console.log("cellClickded", event);
-  }, []);
+  const cellClickedListener = (e) => {
+    setModalOpen(true);
+  };
 
   const initFormValues = () => {
     let period: dayjs.Dayjs[] = [];
@@ -365,6 +407,31 @@ const Grid = () => {
     });
     setColumnDefs(colDefs);
   };
+  const customModalStyles: Modal.Styles = {
+    overlay: {
+      backgroundColor: " rgba(0, 0, 0, 0.4)",
+      width: "100%",
+      height: "100vh",
+      zIndex: "10",
+      position: "fixed",
+      top: "0",
+      left: "0",
+    },
+    content: {
+      width: "720px",
+      height: "720px",
+      zIndex: "150",
+      position: "absolute",
+      top: "50%",
+      left: "50%",
+      transform: "translate(-50%, -50%)",
+      borderRadius: "10px",
+      boxShadow: "2px 2px 2px rgba(0, 0, 0, 0.25)",
+      backgroundColor: "white",
+      justifyContent: "center",
+      overflow: "auto",
+    },
+  };
 
   return (
     <div>
@@ -503,6 +570,15 @@ const Grid = () => {
             className="ag-theme-alpine"
             style={{ width: "100%", height: 676 }}
           >
+            <div>
+              {modalOpen && (
+                <Modal
+                  style={customModalStyles}
+                  isOpen={modalOpen}
+                  onRequestClose={() => setModalOpen(false)}
+                />
+              )}
+            </div>
             <CMMGrid
               ref={gridRef} // Ref for accessing Grid's API
               // rowData={rowData} // Row Data for Rows
