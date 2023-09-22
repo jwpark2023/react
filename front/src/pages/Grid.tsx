@@ -73,17 +73,15 @@ const defaultRow = {
 
 const Grid = () => {
   const gridRef = useRef<AgGridReact<any>>(null);
-  // const [rowData, setRowData] = useState<any>(); // Set rowData to Array of Objects, one Object per Row
   const [messageApi, contextHolder] = message.useMessage();
-  const [period, setPeriod] = useState();
 
   // Each Column Definition results in one Column.
   const [columnDefs, setColumnDefs] = useState<ColDef<any>[]>([
     // { field: "chk" , width:20, cellRenderer : 'checkboxrenderer' },
     { field: "CRUD_FLAG", headerName: "", width: 20 },
-    { field: "P_CODE_NM", headerName: "분류", width: 120 },
+    { field: "P_CODE_NM", headerName: "분류", minWidth: 120 },
     { field: "CODE_CD", headerName: "코드", width: 120 },
-    { field: "CODE_NM", headerName: "코드명", width: 120 },
+    { field: "CODE_NM", headerName: "코드명", minWidth: 120 },
     { field: "CODE_LVL", hide: true },
     { field: "P_CODE_CD", hide: true },
     { field: "DSP_ORDER", headerName: "", hide: true },
@@ -113,16 +111,16 @@ const Grid = () => {
       },
     },
     // { field: "EXP_TO_DT", headerName: "종료일", width: 200, cellRenderer : 'datepickerrenderer' },
-    { field: "ATTR1_JSON", headerName: "속성1 명" },
-    { field: "ATTR2_JSON", headerName: "속성2 명" },
-    { field: "ATTR3_JSON", headerName: "속성3 명" },
-    { field: "ATTR4_JSON", headerName: "속성4 명" },
-    { field: "ATTR5_JSON", headerName: "속성5 명" },
-    { field: "ATTR6_JSON", headerName: "속성6 명" },
-    { field: "ATTR7_JSON", headerName: "속성7 명" },
-    { field: "ATTR8_JSON", headerName: "속성8 명" },
-    { field: "ATTR9_JSON", headerName: "속성9 명" },
-    { field: "ATTR10_JSON", headerName: "속성10 명" },
+    { field: "ATTR1_JSON", headerName: "속성1 명", hide: true },
+    { field: "ATTR2_JSON", headerName: "속성2 명", hide: true },
+    { field: "ATTR3_JSON", headerName: "속성3 명", hide: true },
+    { field: "ATTR4_JSON", headerName: "속성4 명", hide: true },
+    { field: "ATTR5_JSON", headerName: "속성5 명", hide: true },
+    { field: "ATTR6_JSON", headerName: "속성6 명", hide: true },
+    { field: "ATTR7_JSON", headerName: "속성7 명", hide: true },
+    { field: "ATTR8_JSON", headerName: "속성8 명", hide: true },
+    { field: "ATTR9_JSON", headerName: "속성9 명", hide: true },
+    { field: "ATTR10_JSON", headerName: "속성10 명", hide: true },
   ]);
 
   // DefaultColDef sets props common to all Columns
@@ -131,6 +129,8 @@ const Grid = () => {
       width: 100,
       sortable: true,
       editable: true,
+      resizable: true,
+      suppressSizeToFit: false,
     }),
     []
   );
@@ -277,13 +277,16 @@ const Grid = () => {
   };
 
   const updateColDef = (node) => {
-    console.log("updateColDef:", node);
     let colDefs: ColDef<any>[] = gridRef.current?.api.getColumnDefs() || [];
 
     let regExAttrVal = /^ATTR([0-9]{1,2})_VAL$/;
 
+    let sizeCols: any[] = [];
+    sizeCols.push("CODE_NM");
+
     colDefs.forEach((colDef, index) => {
       const colId = colDef.colId || "";
+
       if (regExAttrVal.test(colId)) {
         colDef.hide = true;
         colDef.cellRenderer = undefined;
@@ -293,18 +296,19 @@ const Grid = () => {
           colDef.hide = false;
           const hInfo = JSON.parse(colHeaderInfo);
           colDef.headerName = hInfo.name;
+          sizeCols.push(colId);
 
           switch (hInfo.type) {
-            case "check":
+            case "Checkbox":
               colDef.cellRenderer = "checkboxrenderer";
               break;
-            case "select":
+            case "Select":
               colDef.cellRenderer = "selectboxrenderer";
               break;
-            case "date":
+            case "Date":
               colDef.cellRenderer = "selectboxrenderer";
               break;
-            case "period":
+            case "Period":
               colDef.width = 300;
               colDef.cellRenderer = "datepickerrenderer";
               colDef.cellRendererParams = {
@@ -320,6 +324,8 @@ const Grid = () => {
     });
 
     setColumnDefs(colDefs);
+    gridRef.current?.columnApi.autoSizeColumns(sizeCols);
+    gridRef.current?.api.sizeColumnsToFit();
   };
 
   const getCodelist = (params: any) => {
@@ -347,6 +353,24 @@ const Grid = () => {
     if (!["C", "D"].includes(e.node.data.CRUD_FLAG)) {
       e.node.setDataValue("CRUD_FLAG", "U");
     }
+  };
+
+  const handleChkAttrNm = (e) => {
+    let colDefs: ColDef<any>[] = gridRef.current?.api.getColumnDefs() || [];
+
+    let regExAttrVal = /^ATTR([0-9]{1,2})_JSON$/;
+    let sizeCols: any[] = [];
+    sizeCols.push("CODE_NM");
+
+    colDefs.forEach((colDef) => {
+      const colId = colDef.colId || "";
+      if (regExAttrVal.test(colId)) {
+        colDef.hide = !e.target.checked;
+        sizeCols.push(colId);
+      }
+    });
+    setColumnDefs(colDefs);
+    gridRef.current?.columnApi.autoSizeColumns(sizeCols);
   };
 
   return (
@@ -432,7 +456,10 @@ const Grid = () => {
         </div>
         <div style={{ height: 700, width: "100%" }}>
           <div style={{ display: "flex" }}>
-            <Checkbox style={{ paddingLeft: 1, width: "20%" }}>
+            <Checkbox
+              style={{ paddingLeft: 1, width: "20%" }}
+              onChange={handleChkAttrNm}
+            >
               속성명 표시
             </Checkbox>
             <div
