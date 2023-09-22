@@ -278,6 +278,48 @@ const Grid = () => {
 
   const updateColDef = (node) => {
     console.log("updateColDef:", node);
+    let colDefs: ColDef<any>[] = gridRef.current?.api.getColumnDefs() || [];
+
+    let regExAttrVal = /^ATTR([0-9]{1,2})_VAL$/;
+
+    colDefs.forEach((colDef, index) => {
+      const colId = colDef.colId || "";
+      if (regExAttrVal.test(colId)) {
+        colDef.hide = true;
+        colDef.cellRenderer = undefined;
+
+        const colHeaderInfo = node[colId.replace("_VAL", "_JSON")];
+        if (colHeaderInfo) {
+          colDef.hide = false;
+          const hInfo = JSON.parse(colHeaderInfo);
+          colDef.headerName = hInfo.name;
+
+          switch (hInfo.type) {
+            case "check":
+              colDef.cellRenderer = "checkboxrenderer";
+              break;
+            case "select":
+              colDef.cellRenderer = "selectboxrenderer";
+              break;
+            case "date":
+              colDef.cellRenderer = "selectboxrenderer";
+              break;
+            case "period":
+              colDef.width = 300;
+              colDef.cellRenderer = "datepickerrenderer";
+              colDef.cellRendererParams = {
+                range: true,
+                format: "YYYY-MM-DD",
+              };
+              break;
+            default:
+              break;
+          }
+        }
+      }
+    });
+
+    setColumnDefs(colDefs);
   };
 
   const getCodelist = (params: any) => {
