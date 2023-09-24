@@ -21,12 +21,11 @@ import {
   Tree,
   Typography,
   message,
+  Modal,
 } from "antd";
 import type { DataNode, TreeProps } from "antd/es/tree";
 import dayjs from "dayjs";
 import { Key } from "antd/es/table/interface";
-// import Modal from "src/pages/modal";
-import Modal from "react-modal";
 
 const dateFormat = "YYYY-MM-DD";
 
@@ -90,13 +89,7 @@ const Grid = () => {
   };
 
   const [columnDefs, setColumnDefs] = useState<ColDef<any>[]>([
-    // { field: "CRUD_FLAG", headerName: "", maxWidth: 20 },
-    {
-      field: "CRUD_FLAG",
-      headerName: "",
-      width: 5,
-      cellStyle: crudStyle,
-    },
+    { field: "CRUD_FLAG", headerName: "", maxWidth: 20, cellStyle: crudStyle },
     { field: "P_CODE_NM", headerName: "분류", minWidth: 120 },
     { field: "CODE_CD", headerName: "코드", minWidth: 120, flex: 1 },
     { field: "CODE_NM", headerName: "코드명", minWidth: 120, flex: 1 },
@@ -120,29 +113,6 @@ const Grid = () => {
     { field: "ATTR8_VAL", headerName: "속성8", minWidth: 80 },
     { field: "ATTR9_VAL", headerName: "속성9", minWidth: 80 },
     { field: "ATTR10_VAL", headerName: "속성10", minWidth: 80 },
-    // {
-    //   field: "CRUD_FLAG",
-    //   headerName: "",
-    //   width: 5,
-    //   cellStyle: crudStyle,
-    // },
-    { field: "P_CODE_NM", headerName: "분류", width: 120 },
-    { field: "CODE_CD", headerName: "코드", width: 120 },
-    { field: "CODE_NM", headerName: "코드명", width: 120 },
-    { field: "CODE_LVL", hide: true },
-    { field: "P_CODE_CD", hide: true },
-    { field: "DSP_ORDER", headerName: "", hide: true },
-    { field: "USE_YN", headerName: "사용", cellRenderer: "checkboxrenderer" },
-    { field: "ATTR1_VAL", headerName: "속성1" },
-    { field: "ATTR2_VAL", headerName: "속성2" },
-    { field: "ATTR3_VAL", headerName: "속성3" },
-    { field: "ATTR4_VAL", headerName: "속성4" },
-    { field: "ATTR5_VAL", headerName: "속성5" },
-    { field: "ATTR6_VAL", headerName: "속성6" },
-    { field: "ATTR7_VAL", headerName: "속성7" },
-    { field: "ATTR8_VAL", headerName: "속성8" },
-    { field: "ATTR9_VAL", headerName: "속성9" },
-    { field: "ATTR10_VAL", headerName: "속성10" },
     {
       field: "PERIOD",
       headerName: "기간",
@@ -219,7 +189,6 @@ const Grid = () => {
         });
         return;
       }
-
       //전체 펼침
       setExpandedKeys(result.dataSet.map((item) => item.CODE_CD));
       setTreeData(arrayToTree(result.dataSet, "root"));
@@ -324,15 +293,15 @@ const Grid = () => {
     let colDefs: ColDef<any>[] = gridRef.current?.api.getColumnDefs() || [];
 
     let regExAttrVal = /^ATTR([0-9]{1,2})_VAL$/;
-
     colDefs.forEach((colDef, index) => {
       const colId = colDef.colId || "";
-
       if (regExAttrVal.test(colId)) {
         colDef.hide = true;
         colDef.cellRenderer = undefined;
-
+        console.log("colId", colId);
+        console.log("node", node);
         const colHeaderInfo = node[colId.replace("_VAL", "_JSON")];
+        console.log("colHeaderInfo", colHeaderInfo);
         if (colHeaderInfo) {
           colDef.hide = false;
           const hInfo = JSON.parse(colHeaderInfo);
@@ -407,30 +376,13 @@ const Grid = () => {
     });
     setColumnDefs(colDefs);
   };
-  const customModalStyles: Modal.Styles = {
-    overlay: {
-      backgroundColor: " rgba(0, 0, 0, 0.4)",
-      width: "100%",
-      height: "100vh",
-      zIndex: "10",
-      position: "fixed",
-      top: "0",
-      left: "0",
-    },
-    content: {
-      width: "720px",
-      height: "720px",
-      zIndex: "150",
-      position: "absolute",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-      borderRadius: "10px",
-      boxShadow: "2px 2px 2px rgba(0, 0, 0, 0.25)",
-      backgroundColor: "white",
-      justifyContent: "center",
-      overflow: "auto",
-    },
+
+  const handleOk = () => {
+    setModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setModalOpen(false);
   };
 
   return (
@@ -573,10 +525,41 @@ const Grid = () => {
             <div>
               {modalOpen && (
                 <Modal
-                  style={customModalStyles}
-                  isOpen={modalOpen}
-                  onRequestClose={() => setModalOpen(false)}
-                />
+                  title="title"
+                  open={modalOpen}
+                  onOk={handleOk}
+                  onCancel={handleCancel}
+                  width={500}
+                >
+                  <Form form={form} layout="vertical">
+                    <Form.Item
+                      label="명칭"
+                      name="명칭"
+                      // rules={[
+                      //   {
+                      //     required: true,
+                      //     message: "Please input the title of collection!",
+                      //   },
+                      // ]}
+                    >
+                      <Input />
+                    </Form.Item>
+                    <Form.Item name="유형" label="유형">
+                      <Input type="textarea" />
+                    </Form.Item>
+                    <Form.Item name="공통코드" label="공통코드">
+                      <Tree
+                        showLine
+                        switcherIcon={<DownOutlined />}
+                        expandedKeys={expandedKeys}
+                        selectedKeys={selectedKeys}
+                        onSelect={onTreeNodeSelect}
+                        treeData={treeData}
+                        height={700}
+                      />
+                    </Form.Item>
+                  </Form>
+                </Modal>
               )}
             </div>
             <CMMGrid
