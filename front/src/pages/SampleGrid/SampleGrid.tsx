@@ -4,6 +4,7 @@ import { Typography, message } from "antd";
 import Grid from "./Grid";
 import LeftTree from "./LeftTree";
 import Search from "./Search";
+import CellPop from "./CellPop";
 
 const { Title } = Typography;
 
@@ -38,6 +39,14 @@ const SampleGrid = () => {
           setModalOpen={setModalOpen}
         />
       </div>
+      <CellPop
+        modalTitle={modalTitle}
+        modalOpen={modalOpen}
+        // handleOk={handleOk}
+        // handleCancel={handleCancel}
+        modalNameValue={modalNameValue}
+        modalTypeValue={modalTypeValue}
+      ></CellPop>
     </div>
   );
 };
