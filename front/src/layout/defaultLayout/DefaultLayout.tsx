@@ -1,17 +1,17 @@
 import React, { Suspense, useCallback } from "react";
 import { Container } from "react-bootstrap";
 import { Route, Routes } from "react-router-dom";
-import { Aside, Breadcrumb, HeaderMenu, HeaderTop, SideBar } from "./fragments";
+import { HeaderTop } from "./fragments";
 
 const Dashboard = React.lazy(() => import("src/pages/Dashboard"));
 const Administorator = React.lazy(() => import("src/pages/Administorator"));
-const GridSample = React.lazy(() => import("src/pages/Grid"));
+const SampleGrid = React.lazy(() => import("src/pages/SampleGrid"));
 const Page121 = React.lazy(() => import("src/pages/Page121"));
 
 const routes = [
   { path: "/dashboard", name: "dashboard", component: Dashboard },
   { path: "/grid", name: "page111", component: Administorator },
-  { path: "/gridsample", name: "gridsample", component: GridSample },
+  { path: "/gridsample", name: "gridsample", component: SampleGrid },
   { path: "/page121", name: "page121", component: Page121 },
 ];
 

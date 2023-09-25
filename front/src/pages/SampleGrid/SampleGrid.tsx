@@ -73,7 +73,7 @@ const defaultRow = {
   ATTR10_VAL: null,
 };
 
-const Grid = () => {
+const SampleGrid = () => {
   const gridRef = useRef<AgGridReact<any>>(null);
   const [messageApi, contextHolder] = message.useMessage();
   const [modalOpen, setModalOpen] = useState(false);
@@ -508,4 +508,4 @@ const Grid = () => {
   );
 };
 
-export default Grid;
+export default SampleGrid;
