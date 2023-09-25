@@ -22,6 +22,7 @@ import {
   Typography,
   message,
   Modal,
+  TreeSelect,
 } from "antd";
 import type { DataNode, TreeProps } from "antd/es/tree";
 import dayjs from "dayjs";
@@ -38,6 +39,7 @@ const arrayToTree = (arr, parent) =>
     .map((child) => ({
       ...child,
       title: child.CODE_NM,
+      value: child.CODE_NM,
       key: child.CODE_CD,
       children: arrayToTree(arr, child.CODE_CD),
     }));
@@ -79,6 +81,9 @@ const SampleGrid = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const refSearch = useRef<any>(null);
   // const [period, setPeriod] = useState();
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalNameValue, setModalNameValue] = useState("");
+  const [modalTypeValue, setModalTypeValue] = useState("");
 
   const crudStyle = (params) => {
     if (params.value === "U") {
@@ -165,8 +170,25 @@ const SampleGrid = () => {
 
   // Example of consuming Grid Event
   const cellClickedListener = (e) => {
-    // console.log(e.column.colId);
-    // setModalOpen(true);
+    console.log(treeData);
+    console.log(e.column.colId);
+    console.log(e.column);
+    console.log(e);
+    if (e.column.colId.includes("ATTR")) {
+      if (e.value != undefined) {
+        console.log(JSON.parse(e.value));
+      }
+      let title =
+        "(" +
+        e.data.P_CODE_NM +
+        "_" +
+        e.data.CODE_NM +
+        ")" +
+        " : " +
+        e.column.colId;
+      setModalTitle(title);
+      setModalOpen(true);
+    }
   };
 
   const initFormValues = () => {
@@ -272,6 +294,13 @@ const SampleGrid = () => {
     getCodelist({ P_CODE_CD: keys[0] });
   };
 
+  const onTreeSelect: TreeProps["onSelect"] = (keys, info) => {
+    setSelectedKeys(keys);
+    setSelectedNode(info.node);
+    updateColDef(info.node);
+    getCodelist({ P_CODE_CD: keys[0] });
+  };
+
   const updateColDef = (node) => {
     let colDefs: ColDef<any>[] = gridRef.current?.api.getColumnDefs() || [];
 
@@ -306,6 +335,9 @@ const SampleGrid = () => {
                 range: true,
                 format: "YYYY-MM-DD",
               };
+              break;
+            case "Image":
+              colDef.cellRenderer = "imagerenderer";
               break;
             default:
               break;
@@ -454,7 +486,7 @@ const SampleGrid = () => {
             <div>
               {modalOpen && (
                 <Modal
-                  title="title"
+                  title={modalTitle}
                   open={modalOpen}
                   onOk={handleOk}
                   onCancel={handleCancel}
@@ -474,17 +506,23 @@ const SampleGrid = () => {
                       <Input />
                     </Form.Item>
                     <Form.Item name="유형" label="유형">
-                      <Input type="textarea" />
+                      <Select>
+                        <Option value="">텍스트</Option>
+                        <Option value="Select">콤보박스</Option>
+                        <Option value="Date">달력</Option>
+                        <Option value="Period">기간</Option>
+                        <Option value="Checkbox">체크박스</Option>
+                        <Option value="Image">사진</Option>
+                      </Select>
                     </Form.Item>
                     <Form.Item name="공통코드" label="공통코드">
-                      <Tree
-                        showLine
-                        switcherIcon={<DownOutlined />}
-                        expandedKeys={expandedKeys}
-                        selectedKeys={selectedKeys}
-                        onSelect={onTreeNodeSelect}
+                      <TreeSelect
+                        showSearch
+                        style={{ width: "100%" }}
+                        // value={value}
+                        dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
+                        placeholder="Please select"
                         treeData={treeData}
-                        height={700}
                       />
                     </Form.Item>
                   </Form>
