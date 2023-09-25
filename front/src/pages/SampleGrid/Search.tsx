@@ -1,6 +1,6 @@
-import { forwardRef, useImperativeHandle } from "react";
-
+import { forwardRef, useImperativeHandle, useEffect } from "react";
 import { Button, Col, DatePicker, Form, Input, Row, Select } from "antd";
+import dayjs from "dayjs";
 
 const dateFormat = "YYYY-MM-DD";
 
@@ -20,6 +20,24 @@ const Search = forwardRef<any, any>((props, ref) => {
     },
     []
   );
+
+  const initFormValues = () => {
+    let period: dayjs.Dayjs[] = [];
+    let now = dayjs();
+
+    period.push(now);
+    period.push(now);
+
+    form.setFieldsValue({
+      USE_YN: "Y",
+      PERIOD: period,
+    });
+  };
+
+  // Example load data from server
+  useEffect(() => {
+    initFormValues();
+  }, []);
 
   const searchCodelist = () => {
     form

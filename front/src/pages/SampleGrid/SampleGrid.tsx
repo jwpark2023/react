@@ -5,44 +5,25 @@ import { ColDef } from "ag-grid-community";
 import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 
-import { request } from "src/utils/axios";
 import CMMGrid from "src/component/Grid/CMMGrid";
+import { request } from "src/utils/axios";
 
-import { DownOutlined } from "@ant-design/icons";
 import {
   Button,
   Checkbox,
-  Col,
-  DatePicker,
   Form,
   Input,
-  Row,
-  Select,
-  Tree,
+  Modal,
   Typography,
   message,
-  Modal,
+  Select,
   TreeSelect,
 } from "antd";
-import type { DataNode, TreeProps } from "antd/es/tree";
 import dayjs from "dayjs";
-import { Key } from "antd/es/table/interface";
+import LeftTree from "./LeftTree";
 import Search from "./Search";
 
-const dateFormat = "YYYY-MM-DD";
-
-const { Title, Paragraph, Text, Link } = Typography;
-
-const arrayToTree = (arr, parent) =>
-  arr
-    .filter((item) => item.P_CODE_CD === parent)
-    .map((child) => ({
-      ...child,
-      title: child.CODE_NM,
-      value: child.CODE_NM,
-      key: child.CODE_CD,
-      children: arrayToTree(arr, child.CODE_CD),
-    }));
+const { Title } = Typography;
 
 const defaultRow = {
   CODE_CD: "new",
@@ -77,13 +58,17 @@ const defaultRow = {
 
 const SampleGrid = () => {
   const gridRef = useRef<AgGridReact<any>>(null);
+  const refSearch = useRef<any>(null);
+  const refTree = useRef<any>(null);
+
   const [messageApi, contextHolder] = message.useMessage();
   const [modalOpen, setModalOpen] = useState(false);
-  const refSearch = useRef<any>(null);
   // const [period, setPeriod] = useState();
   const [modalTitle, setModalTitle] = useState("");
   const [modalNameValue, setModalNameValue] = useState("");
   const [modalTypeValue, setModalTypeValue] = useState("");
+
+  const { Option } = Select;
 
   const crudStyle = (params) => {
     if (params.value === "U") {
@@ -158,19 +143,9 @@ const SampleGrid = () => {
 
   // Form
   const [form] = Form.useForm();
-  const { Option } = Select;
-
-  const { RangePicker } = DatePicker;
-
-  // tree
-  const [treeData, setTreeData] = useState([]);
-  const [expandedKeys, setExpandedKeys] = useState([]);
-  const [selectedKeys, setSelectedKeys] = useState<Key[]>([]);
-  const [selectedNode, setSelectedNode] = useState<DataNode>();
 
   // Example of consuming Grid Event
   const cellClickedListener = (e) => {
-    console.log(treeData);
     console.log(e.column.colId);
     console.log(e.column);
     console.log(e);
@@ -191,48 +166,13 @@ const SampleGrid = () => {
     }
   };
 
-  const initFormValues = () => {
-    let period: dayjs.Dayjs[] = [];
-    let now = dayjs();
-
-    period.push(now);
-    period.push(now);
-
-    form.setFieldsValue({
-      USE_YN: "Y",
-      PERIOD: period,
-    });
-  };
-
-  const getTreeData = () => {
-    request("get", "/sample/treeList", null).then((result) => {
-      console.log("/sample/treeList", result);
-      if (result.code != "S0000001" || result.dataSet.length < 1) {
-        messageApi.open({
-          type: "error",
-          content: "조회된 정보가 없습니다.",
-        });
-        return;
-      }
-      //전체 펼침
-      setExpandedKeys(result.dataSet.map((item) => item.CODE_CD));
-      setTreeData(arrayToTree(result.dataSet, "root"));
-    });
-  };
-
-  // Example load data from server
-  useEffect(() => {
-    getTreeData();
-    initFormValues();
-  }, []);
-
   // Example using Grid's API
   const buttonListener = useCallback((e) => {
     console.log("버튼:", e);
   }, []);
 
   const handleBtnAdd = (e) => {
-    if (selectedKeys.length < 1) {
+    if (refTree.current.selectedKeys.length < 1) {
       message.warning("상위 분류를 선택하세요.");
       return;
     }
@@ -242,8 +182,8 @@ const SampleGrid = () => {
         {
           ...defaultRow,
           CRUD_FLAG: "C",
-          P_CODE_CD: selectedNode?.key,
-          P_CODE_NM: selectedNode?.title,
+          P_CODE_CD: refTree.current.selectedNode?.key,
+          P_CODE_NM: refTree.current.selectedNode?.title,
           PERIOD: [dayjs(), dayjs("9999-12-31", "YYYY-MM-DD")],
         },
       ],
@@ -282,23 +222,9 @@ const SampleGrid = () => {
           content: "저장에 실패하였습니다.",
         });
       }
-      getTreeData();
+      refTree.current.getTreeData();
       refSearch.current?.searchCodelist();
     });
-  };
-
-  const onTreeNodeSelect: TreeProps["onSelect"] = (keys, info) => {
-    setSelectedKeys(keys);
-    setSelectedNode(info.node);
-    updateColDef(info.node);
-    getCodelist({ P_CODE_CD: keys[0] });
-  };
-
-  const onTreeSelect: TreeProps["onSelect"] = (keys, info) => {
-    setSelectedKeys(keys);
-    setSelectedNode(info.node);
-    updateColDef(info.node);
-    getCodelist({ P_CODE_CD: keys[0] });
   };
 
   const updateColDef = (node) => {
@@ -408,25 +334,7 @@ const SampleGrid = () => {
 
       <Search ref={refSearch} getCodelist={getCodelist} />
       <div style={{ display: "flex", height: 700 }}>
-        <div
-          style={{
-            width: 300,
-            marginTop: 24,
-            marginRight: 5,
-            background: "#ffff",
-            borderRadius: "4px",
-          }}
-        >
-          <Tree
-            showLine
-            switcherIcon={<DownOutlined />}
-            expandedKeys={expandedKeys}
-            selectedKeys={selectedKeys}
-            onSelect={onTreeNodeSelect}
-            treeData={treeData}
-            height={700}
-          />
-        </div>
+        <LeftTree updateColDef={updateColDef} getCodelist={getCodelist} />
         <div style={{ height: 700, width: "100%" }}>
           <div style={{ display: "flex" }}>
             <Checkbox
@@ -522,7 +430,7 @@ const SampleGrid = () => {
                         // value={value}
                         dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
                         placeholder="Please select"
-                        treeData={treeData}
+                        treeData={[]}
                       />
                     </Form.Item>
                   </Form>
