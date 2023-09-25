@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 const dateFormat = "YYYY-MM-DD";
 
 const Search = forwardRef<any, any>((props, ref) => {
-  const { regGrid } = props;
+  const { refGrid } = props;
   const [form] = Form.useForm();
   const { Option } = Select;
 
@@ -50,7 +50,7 @@ const Search = forwardRef<any, any>((props, ref) => {
             fields.PERIOD[1].format(dateFormat),
           ],
         };
-        regGrid.current.getCodelist(params);
+        refGrid.current.getCodelist(params);
       })
       .catch((e) => {
         console.log("validateFields: ", e);
