@@ -26,6 +26,7 @@ import {
 import type { DataNode, TreeProps } from "antd/es/tree";
 import dayjs from "dayjs";
 import { Key } from "antd/es/table/interface";
+import Search from "./Search";
 
 const dateFormat = "YYYY-MM-DD";
 
@@ -76,6 +77,8 @@ const Grid = () => {
   const gridRef = useRef<AgGridReact<any>>(null);
   const [messageApi, contextHolder] = message.useMessage();
   const [modalOpen, setModalOpen] = useState(false);
+  const refSearch = useRef<any>(null);
+  // const [period, setPeriod] = useState();
 
   const crudStyle = (params) => {
     if (params.value === "U") {
@@ -195,24 +198,6 @@ const Grid = () => {
     });
   };
 
-  const searchCodelist = () => {
-    form
-      .validateFields()
-      .then((fields) => {
-        const params = {
-          ...fields,
-          PERIOD: [
-            fields.PERIOD[0].format(dateFormat),
-            fields.PERIOD[1].format(dateFormat),
-          ],
-        };
-        getCodelist(params);
-      })
-      .catch((e) => {
-        console.log("validateFields: ", e);
-      });
-  };
-
   // Example load data from server
   useEffect(() => {
     getTreeData();
@@ -225,7 +210,6 @@ const Grid = () => {
   }, []);
 
   const handleBtnAdd = (e) => {
-    console.log("추가 selectedKeys:", selectedKeys);
     if (selectedKeys.length < 1) {
       message.warning("상위 분류를 선택하세요.");
       return;
@@ -238,6 +222,7 @@ const Grid = () => {
           CRUD_FLAG: "C",
           P_CODE_CD: selectedNode?.key,
           P_CODE_NM: selectedNode?.title,
+          PERIOD: [dayjs(), dayjs("9999-12-31", "YYYY-MM-DD")],
         },
       ],
     });
@@ -262,12 +247,10 @@ const Grid = () => {
     let data: any[] = [];
     gridRef.current?.api.forEachNode((node) => {
       if (["C", "U", "D"].includes(node?.data.CRUD_FLAG)) {
-        console.log(node.data);
-        node.data.EXP_FR_DT = node.data.PERIOD[0];
-        node.data.EXP_TO_DT = node.data.PERIOD[1];
+        node.data.EXP_FR_DT = node.data.PERIOD[0].format("YYYY-MM-DD");
+        node.data.EXP_TO_DT = node.data.PERIOD[1].format("YYYY-MM-DD");
         data.push(node?.data);
       }
-      console.log(data);
     });
 
     request("post", "/sample/saveCodeList", data).then((result) => {
@@ -278,7 +261,7 @@ const Grid = () => {
         });
       }
       getTreeData();
-      searchCodelist();
+      refSearch.current?.searchCodelist();
     });
   };
 
@@ -391,60 +374,7 @@ const Grid = () => {
         공통코드 관리
       </Title>
 
-      <div>
-        <Form
-          form={form}
-          name="advanced_search"
-          style={{
-            margin: "0 0 16px",
-            background: "lightgray",
-            padding: "12px",
-            borderRadius: "5px",
-          }}
-          onKeyUp={(e) => e.key === "Enter" && searchCodelist()}
-        >
-          <Row gutter={24}>
-            <Col span={5}>
-              <Form.Item name="SEARCH_TEXT" label="검색조건">
-                <Input />
-              </Form.Item>
-            </Col>
-            <Col span={3}>
-              <Form.Item
-                name="USE_YN"
-                label="사용여부"
-                rules={[
-                  {
-                    required: true,
-                  },
-                ]}
-              >
-                <Select style={{ width: "80px" }}>
-                  <Option value="">전체</Option>
-                  <Option value="Y">Y</Option>
-                  <Option value="N">N</Option>
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={6}>
-              <Form.Item name="PERIOD" label="기간">
-                <RangePicker format={"YYYY-MM-DD"} />
-              </Form.Item>
-            </Col>
-            <Col span={5} />
-            <Col span={2}>
-              <Button
-                type="primary"
-                style={{ width: "100%" }}
-                onClick={searchCodelist}
-              >
-                조회
-              </Button>
-            </Col>
-          </Row>
-        </Form>
-      </div>
-
+      <Search ref={refSearch} getCodelist={getCodelist} />
       <div style={{ display: "flex", height: 700 }}>
         <div
           style={{
