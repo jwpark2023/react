@@ -16,13 +16,11 @@ const arrayToTree = (arr, parent) =>
     }));
 
 const LeftTree = forwardRef<any, any>((props, ref) => {
-  const { updateColDef, getCodelist } = props;
+  const { refGrid, messageApi } = props;
   const [treeData, setTreeData] = useState([]);
   const [expandedKeys, setExpandedKeys] = useState([]);
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([]);
   const [selectedNode, setSelectedNode] = useState<DataNode>();
-
-  const [messageApi, contextHolder] = message.useMessage();
 
   useImperativeHandle(
     ref,
@@ -56,8 +54,8 @@ const LeftTree = forwardRef<any, any>((props, ref) => {
   const onTreeNodeSelect: TreeProps["onSelect"] = (keys, info) => {
     setSelectedKeys(keys);
     setSelectedNode(info.node);
-    updateColDef(info.node);
-    getCodelist({ P_CODE_CD: keys[0] });
+    refGrid.current.updateColDef(info.node);
+    refGrid.current.getCodelist({ P_CODE_CD: keys[0] });
   };
 
   return (
