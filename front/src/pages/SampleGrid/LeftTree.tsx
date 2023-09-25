@@ -27,6 +27,8 @@ const LeftTree = forwardRef<any, any>((props, ref) => {
     () => {
       return {
         getTreeData: getTreeData,
+        selectedKeys: selectedKeys,
+        selectedNode: selectedNode,
       };
     },
     []

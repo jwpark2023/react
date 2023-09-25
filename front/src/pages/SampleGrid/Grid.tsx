@@ -166,6 +166,8 @@ const Grid = forwardRef<any, any>((props, ref) => {
   }, []);
 
   const handleBtnAdd = (e) => {
+    console.log("refTree:", refTree);
+
     if (refTree.current.selectedKeys.length < 1) {
       messageApi.open({
         type: "warn",
