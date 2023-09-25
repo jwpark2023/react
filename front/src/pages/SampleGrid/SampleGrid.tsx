@@ -151,7 +151,10 @@ const SampleGrid = () => {
     console.log(e);
     if (e.column.colId.includes("ATTR")) {
       if (e.value != undefined) {
-        console.log(JSON.parse(e.value));
+        let colValue = JSON.parse(e.value);
+
+        setModalNameValue(colValue.name);
+        setModalTypeValue(colValue.type);
       }
       let title =
         "(" +
@@ -411,10 +414,16 @@ const SampleGrid = () => {
                       //   },
                       // ]}
                     >
-                      <Input />
+                      <Input
+                        defaultValue={modalNameValue}
+                        value={modalNameValue}
+                      />
                     </Form.Item>
                     <Form.Item name="유형" label="유형">
-                      <Select>
+                      <Select
+                        defaultValue={modalTypeValue}
+                        value={modalTypeValue}
+                      >
                         <Option value="">텍스트</Option>
                         <Option value="Select">콤보박스</Option>
                         <Option value="Date">달력</Option>
