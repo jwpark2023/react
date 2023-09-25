@@ -17,13 +17,17 @@ function DatePickerForGrid(props) {
     return (
       <span>
         <RangePicker
+          // defaultValue={[dayjs(), dayjs("9999-12-31", "YYYY-MM-DD")]}
           value={
             props.value
               ? [
                   dayjs(props.value[0], "YYYY-MM-DD"),
                   dayjs(props.value[1], "YYYY-MM-DD"),
                 ]
-              : undefined
+              : props.setValue([
+                  dayjs().format("YYYY-MM-DD"),
+                  dayjs("9999-12-31", "YYYY-MM-DD").format("YYYY-MM-DD"),
+                ])
           }
           format={props.format}
           onChange={onChange}
@@ -34,7 +38,8 @@ function DatePickerForGrid(props) {
     return (
       <span>
         <DatePicker
-          value={props.value ? dayjs(props.value, "YYYY-MM-DD") : undefined}
+          // defaultValue={dayjs()}
+          value={props.value ? dayjs(props.value, "YYYY-MM-DD") : dayjs()}
           format={props.format}
           onChange={onChange}
         />

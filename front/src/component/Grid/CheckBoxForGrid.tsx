@@ -15,7 +15,10 @@ function CheckBoxForGrid(props) {
 
   return (
     <span>
-      <Checkbox onChange={onChange} checked={props.value == "Y"}></Checkbox>
+      <Checkbox
+        onChange={onChange}
+        checked={props.value ? "Y" : props.setValue("Y")}
+      ></Checkbox>
     </span>
   );
 }

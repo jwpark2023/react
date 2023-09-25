@@ -76,7 +76,6 @@ const Grid = () => {
   const gridRef = useRef<AgGridReact<any>>(null);
   const [messageApi, contextHolder] = message.useMessage();
   const [modalOpen, setModalOpen] = useState(false);
-  // const [period, setPeriod] = useState();
 
   const crudStyle = (params) => {
     if (params.value === "U") {
@@ -163,7 +162,8 @@ const Grid = () => {
 
   // Example of consuming Grid Event
   const cellClickedListener = (e) => {
-    setModalOpen(true);
+    // console.log(e.column.colId);
+    // setModalOpen(true);
   };
 
   const initFormValues = () => {
@@ -298,10 +298,9 @@ const Grid = () => {
       if (regExAttrVal.test(colId)) {
         colDef.hide = true;
         colDef.cellRenderer = undefined;
-        console.log("colId", colId);
-        console.log("node", node);
+
         const colHeaderInfo = node[colId.replace("_VAL", "_JSON")];
-        console.log("colHeaderInfo", colHeaderInfo);
+
         if (colHeaderInfo) {
           colDef.hide = false;
           const hInfo = JSON.parse(colHeaderInfo);
