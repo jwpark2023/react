@@ -202,8 +202,6 @@ const Grid = forwardRef<any, any>((props, ref) => {
         node.setDataValue("CRUD_FLAG", "D");
       }
     });
-
-    // console.log(rowData);
   };
 
   const handleBtnSave = (e) => {
@@ -316,14 +314,6 @@ const Grid = forwardRef<any, any>((props, ref) => {
       }
     });
     setColumnDefs(colDefs);
-  };
-
-  const handleOk = () => {
-    setModalOpen(false);
-  };
-
-  const handleCancel = () => {
-    setModalOpen(false);
   };
 
   return (

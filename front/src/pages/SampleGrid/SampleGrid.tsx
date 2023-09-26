@@ -19,6 +19,7 @@ const SampleGrid = () => {
   const [modalTitle, setModalTitle] = useState("");
   const [modalNameValue, setModalNameValue] = useState("");
   const [modalTypeValue, setModalTypeValue] = useState("");
+  const [modalResult, setModalResult] = useState("");
 
   return (
     <div>
@@ -42,8 +43,8 @@ const SampleGrid = () => {
       <CellPop
         modalTitle={modalTitle}
         modalOpen={modalOpen}
-        // handleOk={handleOk}
-        // handleCancel={handleCancel}
+        setModalOpen={setModalOpen}
+        setModalResult={setModalResult}
         modalNameValue={modalNameValue}
         modalTypeValue={modalTypeValue}
       ></CellPop>
