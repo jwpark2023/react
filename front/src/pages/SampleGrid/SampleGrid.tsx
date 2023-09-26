@@ -5,6 +5,7 @@ import Grid from "./Grid";
 import LeftTree from "./LeftTree";
 import Search from "./Search";
 import CellPop from "./CellPop";
+import { DataNode } from "antd/es/tree";
 
 const { Title } = Typography;
 
@@ -14,6 +15,7 @@ const SampleGrid = () => {
   const refGrid = useRef<any>(null);
 
   const [messageApi, contextHolder] = message.useMessage();
+  const [selectedNode, setSelectedNode] = useState<DataNode>();
   const [modalOpen, setModalOpen] = useState(false);
   // const [period, setPeriod] = useState();
   const [modalTitle, setModalTitle] = useState("");
@@ -30,12 +32,18 @@ const SampleGrid = () => {
 
       <Search ref={refSearch} refGrid={refGrid} />
       <div style={{ display: "flex", height: 700 }}>
-        <LeftTree ref={refTree} refGrid={refGrid} messageApi={messageApi} />
+        <LeftTree
+          ref={refTree}
+          refGrid={refGrid}
+          messageApi={messageApi}
+          setSelectedNode={setSelectedNode}
+        />
         <Grid
           ref={refGrid}
           refTree={refTree}
           refSearch={refSearch}
           messageApi={messageApi}
+          selectedNode={selectedNode}
           setModalTitle={setModalTitle}
           setModalOpen={setModalOpen}
         />

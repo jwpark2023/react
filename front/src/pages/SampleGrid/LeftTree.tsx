@@ -1,7 +1,6 @@
 import { DownOutlined } from "@ant-design/icons";
 import { Tree, TreeProps, message } from "antd";
 import { Key } from "antd/es/table/interface";
-import { DataNode } from "antd/es/tree";
 import { forwardRef, useImperativeHandle, useState, useEffect } from "react";
 import { request } from "src/utils/axios";
 
@@ -16,29 +15,26 @@ const arrayToTree = (arr, parent) =>
     }));
 
 const LeftTree = forwardRef<any, any>((props, ref) => {
-  const { refGrid, messageApi } = props;
+  const { refGrid, messageApi, setSelectedNode } = props;
   const [treeData, setTreeData] = useState([]);
   const [expandedKeys, setExpandedKeys] = useState([]);
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([]);
-  const [selectedNode, setSelectedNode] = useState<DataNode>();
 
   useImperativeHandle(
     ref,
     () => {
       return {
-        getTreeData: getTreeData,
-        selectedKeys: selectedKeys,
-        selectedNode: selectedNode,
+        renderTreeData: renderTreeData,
       };
     },
     []
   );
 
   useEffect(() => {
-    getTreeData();
+    renderTreeData();
   }, []);
 
-  const getTreeData = () => {
+  const renderTreeData = () => {
     request("get", "/sample/treeList", null).then((result) => {
       console.log("/sample/treeList", result);
       if (result.code != "S0000001" || result.dataSet.length < 1) {
@@ -55,7 +51,7 @@ const LeftTree = forwardRef<any, any>((props, ref) => {
   };
   const onTreeNodeSelect: TreeProps["onSelect"] = (keys, info) => {
     setSelectedKeys(keys);
-    setSelectedNode(info.node);
+    setSelectedNode(info.selected ? info.node : undefined);
     refGrid.current.updateColDef(info.node);
     refGrid.current.getCodelist({ P_CODE_CD: keys[0] });
   };

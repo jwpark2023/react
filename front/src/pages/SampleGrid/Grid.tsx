@@ -50,7 +50,14 @@ const defaultRow = {
 };
 
 const Grid = forwardRef<any, any>((props, ref) => {
-  const { refTree, refSearch, messageApi, setModalTitle, setModalOpen } = props;
+  const {
+    refTree,
+    refSearch,
+    messageApi,
+    setModalTitle,
+    setModalOpen,
+    selectedNode,
+  } = props;
   const gridRef = useRef<AgGridReact<any>>(null);
 
   useImperativeHandle(
@@ -78,10 +85,31 @@ const Grid = forwardRef<any, any>((props, ref) => {
     let name = params.value ? JSON.parse(params.value).name : undefined;
     return name;
   };
+  const defaultColDef = useMemo(
+    () => ({
+      sortable: true,
+      editable: true,
+      resizable: true,
+      flex: 1,
+      suppressSizeToFit: false,
+    }),
+    []
+  );
 
   const [columnDefs, setColumnDefs] = useState<ColDef<any>[]>([
-    { field: "CRUD_FLAG", headerName: "", maxWidth: 20, cellStyle: crudStyle },
-    { field: "P_CODE_NM", headerName: "분류", minWidth: 120 },
+    {
+      field: "CRUD_FLAG",
+      headerName: "",
+      maxWidth: 5,
+      cellStyle: crudStyle,
+      resizable: false,
+    },
+    {
+      field: "P_CODE_NM",
+      headerName: "분류",
+      minWidth: 120,
+      rowDrag: true,
+    },
     { field: "CODE_CD", headerName: "코드", minWidth: 120, flex: 1 },
     { field: "CODE_NM", headerName: "코드명", minWidth: 120, flex: 1 },
     { field: "CODE_LVL", hide: true },
@@ -188,18 +216,6 @@ const Grid = forwardRef<any, any>((props, ref) => {
     },
   ]);
 
-  // DefaultColDef sets props common to all Columns
-  const defaultColDef = useMemo(
-    () => ({
-      sortable: true,
-      editable: true,
-      resizable: true,
-      flex: 1,
-      suppressSizeToFit: false,
-    }),
-    []
-  );
-
   // Form
   const [form] = Form.useForm();
 
@@ -231,24 +247,26 @@ const Grid = forwardRef<any, any>((props, ref) => {
   }, []);
 
   const handleBtnAdd = (e) => {
-    console.log("refTree:", refTree);
-
-    if (refTree.current.selectedKeys.length < 1) {
+    if (selectedNode == undefined) {
       messageApi.open({
         type: "warn",
         content: "상위 분류를 선택하세요.",
       });
       return;
     }
+
+    const rowCnt = gridRef.current?.api.getRenderedNodes().length || 0;
+
     gridRef.current?.api.applyTransaction({
-      addIndex: 0,
+      addIndex: rowCnt,
       add: [
         {
           ...defaultRow,
           CRUD_FLAG: "C",
-          P_CODE_CD: refTree.current.selectedNode?.key,
-          P_CODE_NM: refTree.current.selectedNode?.title,
+          P_CODE_CD: selectedNode?.key,
+          P_CODE_NM: selectedNode?.title,
           PERIOD: [dayjs(), dayjs("9999-12-31", "YYYY-MM-DD")],
+          DSP_ORDER: rowCnt + 1,
         },
       ],
     });
@@ -273,8 +291,8 @@ const Grid = forwardRef<any, any>((props, ref) => {
     let data: any[] = [];
     gridRef.current?.api.forEachNode((node) => {
       if (["C", "U", "D"].includes(node?.data.CRUD_FLAG)) {
-        node.data.EXP_FR_DT = node.data.PERIOD[0].format("YYYY-MM-DD");
-        node.data.EXP_TO_DT = node.data.PERIOD[1].format("YYYY-MM-DD");
+        node.data.EXP_FR_DT = node.data.PERIOD[0];
+        node.data.EXP_TO_DT = node.data.PERIOD[1];
         data.push(node?.data);
       }
     });
@@ -286,7 +304,7 @@ const Grid = forwardRef<any, any>((props, ref) => {
           content: "저장에 실패하였습니다.",
         });
       }
-      refTree.current.getTreeData();
+      refTree.current.renderTreeData();
       refSearch.current?.searchCodelist();
     });
   };
@@ -361,7 +379,6 @@ const Grid = forwardRef<any, any>((props, ref) => {
   };
 
   const onCellValueChanged = (e) => {
-    console.log("onCellValueChanged:", e);
     if (!["C", "D"].includes(e.node.data.CRUD_FLAG)) {
       e.node.setDataValue("CRUD_FLAG", "U");
     }
@@ -379,6 +396,17 @@ const Grid = forwardRef<any, any>((props, ref) => {
       }
     });
     setColumnDefs(colDefs);
+  };
+
+  const handleRowDragEnd = (e) => {
+    gridRef.current?.api.forEachNode((node) => {
+      let newOrder = (node.rowIndex || 0) + 1;
+      console.log("node", newOrder, node.data.DSP_ORDER, node);
+      if (newOrder != node.data.DSP_ORDER) {
+        node.setDataValue("CRUD_FLAG", "U");
+        node.setDataValue("DSP_ORDER", node.rowIndex || 0 + 1);
+      }
+    });
   };
 
   return (
@@ -426,9 +454,14 @@ const Grid = forwardRef<any, any>((props, ref) => {
           columnDefs={columnDefs} // Column Defs for Columns
           defaultColDef={defaultColDef} // Default Column Properties
           animateRows={true} // Optional - set to 'true' to have rows animate when sorted
+          getRowClass={(params) => {
+            return params.data.CRUD_FLAG == "D" ? "cancled-row" : null;
+          }}
+          rowDragManaged={true}
           suppressRowClickSelection={true}
           onCellClicked={cellClickedListener} // Optional - registering for Grid Event
           onCellValueChanged={onCellValueChanged}
+          onRowDragEnd={handleRowDragEnd}
         />
       </div>
     </div>
