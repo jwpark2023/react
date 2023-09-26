@@ -5,16 +5,24 @@ const CellPop = (props) => {
   const [form] = Form.useForm();
   const { Option } = Select;
 
-  useEffect(() => {
-    console.log(props);
-  }, [props]);
+  // useEffect(() => {
+  //   console.log(props);
+  // }, [props]);
+
+  const handleOk = () => {
+    props.setModalResult("");
+  };
+
+  const handleCancel = () => {
+    props.setModalOpen(false);
+  };
 
   return (
     <Modal
       title={props.modalTitle}
       open={props.modalOpen}
-      onOk={props.handleOk}
-      onCancel={props.handleCancel}
+      onOk={handleOk}
+      onCancel={handleCancel}
       width={500}
     >
       <Form form={form} layout="vertical">
