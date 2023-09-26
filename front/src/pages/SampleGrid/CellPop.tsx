@@ -1,13 +1,17 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Form, Input, Modal, Select, TreeSelect } from "antd";
 
 const CellPop = (props) => {
   const [form] = Form.useForm();
   const { Option } = Select;
 
-  // useEffect(() => {
-  //   console.log(props);
-  // }, [props]);
+  const [inpuValue, setInputValue] = useState("");
+
+  const onChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setInputValue(e.target.value);
+  };
 
   const handleOk = () => {
     props.setModalResult("");
@@ -39,6 +43,7 @@ const CellPop = (props) => {
           <Input
             defaultValue={props.modalNameValue}
             value={props.modalNameValue}
+            onChange={onChange}
           />
         </Form.Item>
         <Form.Item name="유형" label="유형">
