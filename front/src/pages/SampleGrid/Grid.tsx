@@ -361,6 +361,7 @@ const Grid = forwardRef<any, any>((props, ref) => {
           columnDefs={columnDefs} // Column Defs for Columns
           defaultColDef={defaultColDef} // Default Column Properties
           animateRows={true} // Optional - set to 'true' to have rows animate when sorted
+          suppressRowClickSelection={true}
           onCellClicked={cellClickedListener} // Optional - registering for Grid Event
           onCellValueChanged={onCellValueChanged}
         />
