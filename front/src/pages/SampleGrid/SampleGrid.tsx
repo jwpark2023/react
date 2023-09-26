@@ -29,7 +29,7 @@ const SampleGrid = () => {
 
       <Search ref={refSearch} refGrid={refGrid} />
       <div style={{ display: "flex", height: 700 }}>
-        <LeftTree ref={refTree} refGrid={refGrid} />
+        <LeftTree ref={refTree} refGrid={refGrid} messageApi={messageApi} />
         <Grid
           ref={refGrid}
           refTree={refTree}
