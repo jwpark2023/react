@@ -74,6 +74,11 @@ const Grid = forwardRef<any, any>((props, ref) => {
     }
   };
 
+  const valueDisplayFormatter = (params) => {
+    let name = params.value ? JSON.parse(params.value).name : undefined;
+    return name;
+  };
+
   const [columnDefs, setColumnDefs] = useState<ColDef<any>[]>([
     { field: "CRUD_FLAG", headerName: "", maxWidth: 20, cellStyle: crudStyle },
     { field: "P_CODE_NM", headerName: "분류", minWidth: 120 },
@@ -106,16 +111,76 @@ const Grid = forwardRef<any, any>((props, ref) => {
       cellRenderer: "datepickerrenderer",
       cellRendererParams: { range: true, format: "YYYY-MM-DD" },
     },
-    { field: "ATTR1_JSON", headerName: "속성1 명", minWidth: 80, hide: true },
-    { field: "ATTR2_JSON", headerName: "속성2 명", minWidth: 80, hide: true },
-    { field: "ATTR3_JSON", headerName: "속성3 명", minWidth: 80, hide: true },
-    { field: "ATTR4_JSON", headerName: "속성4 명", minWidth: 80, hide: true },
-    { field: "ATTR5_JSON", headerName: "속성5 명", minWidth: 80, hide: true },
-    { field: "ATTR6_JSON", headerName: "속성6 명", minWidth: 80, hide: true },
-    { field: "ATTR7_JSON", headerName: "속성7 명", minWidth: 80, hide: true },
-    { field: "ATTR8_JSON", headerName: "속성8 명", minWidth: 80, hide: true },
-    { field: "ATTR9_JSON", headerName: "속성9 명", minWidth: 80, hide: true },
-    { field: "ATTR10_JSON", headerName: "속성10 명", minWidth: 80, hide: true },
+    {
+      field: "ATTR1_JSON",
+      headerName: "속성1 명",
+      minWidth: 80,
+      hide: true,
+      valueFormatter: valueDisplayFormatter,
+    },
+    {
+      field: "ATTR2_JSON",
+      headerName: "속성2 명",
+      minWidth: 80,
+      hide: true,
+      valueFormatter: valueDisplayFormatter,
+    },
+    {
+      field: "ATTR3_JSON",
+      headerName: "속성3 명",
+      minWidth: 80,
+      hide: true,
+      valueFormatter: valueDisplayFormatter,
+    },
+    {
+      field: "ATTR4_JSON",
+      headerName: "속성4 명",
+      minWidth: 80,
+      hide: true,
+      valueFormatter: valueDisplayFormatter,
+    },
+    {
+      field: "ATTR5_JSON",
+      headerName: "속성5 명",
+      minWidth: 80,
+      hide: true,
+      valueFormatter: valueDisplayFormatter,
+    },
+    {
+      field: "ATTR6_JSON",
+      headerName: "속성6 명",
+      minWidth: 80,
+      hide: true,
+      valueFormatter: valueDisplayFormatter,
+    },
+    {
+      field: "ATTR7_JSON",
+      headerName: "속성7 명",
+      minWidth: 80,
+      hide: true,
+      valueFormatter: valueDisplayFormatter,
+    },
+    {
+      field: "ATTR8_JSON",
+      headerName: "속성8 명",
+      minWidth: 80,
+      hide: true,
+      valueFormatter: valueDisplayFormatter,
+    },
+    {
+      field: "ATTR9_JSON",
+      headerName: "속성9 명",
+      minWidth: 80,
+      hide: true,
+      valueFormatter: valueDisplayFormatter,
+    },
+    {
+      field: "ATTR10_JSON",
+      headerName: "속성10 명",
+      minWidth: 80,
+      hide: true,
+      valueFormatter: valueDisplayFormatter,
+    },
     {
       maxWidth: 50,
       headerCheckboxSelection: true,
