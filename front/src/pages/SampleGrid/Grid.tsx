@@ -8,7 +8,7 @@ import {
   useState,
 } from "react";
 
-import { ColDef } from "ag-grid-community";
+import { ColDef, RowNode } from "ag-grid-community";
 import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
 
@@ -18,9 +18,11 @@ import { request } from "src/utils/axios";
 import { Button, Checkbox, Form } from "antd";
 import dayjs from "dayjs";
 
+const dateFormat = "YYYY-MM-DD";
+
 const defaultRow = {
-  CODE_CD: "new",
-  CODE_NM: "N001",
+  CODE_CD: "",
+  CODE_NM: "",
   CODE_LVL: 1,
   P_CODE_CD: null,
   DSP_ORDER: null,
@@ -56,7 +58,7 @@ const Grid = forwardRef<any, any>((props, ref) => {
     messageApi,
     setModalTitle,
     setModalOpen,
-    selectedNode,
+    refSelectedNode,
   } = props;
   const gridRef = useRef<AgGridReact<any>>(null);
 
@@ -247,7 +249,8 @@ const Grid = forwardRef<any, any>((props, ref) => {
   }, []);
 
   const handleBtnAdd = (e) => {
-    if (selectedNode == undefined) {
+    console.log("refSelectedNode:", refSelectedNode);
+    if (refSelectedNode?.current == undefined) {
       messageApi.open({
         type: "warn",
         content: "상위 분류를 선택하세요.",
@@ -258,31 +261,56 @@ const Grid = forwardRef<any, any>((props, ref) => {
     const renderedNodes = gridRef.current?.api.getRenderedNodes() || [];
 
     let nextSeq =
-      Math.max.apply(
-        null,
-        renderedNodes.map((node) => {
-          let seq = Number(node.data.CODE_CD.replace(node.data.P_CODE_CD, ""));
-          seq = Number.isNaN(seq) ? 0 : seq;
-          return seq;
-        }) || [0]
-      ) + 1;
+      renderedNodes.length == 0
+        ? 1
+        : Math.max.apply(
+            null,
+            renderedNodes.map((node) => {
+              let seq = Number(
+                node.data.CODE_CD.replace(node.data.P_CODE_CD, "")
+              );
+
+              console.log(
+                "seq:",
+                seq,
+                node.data.CODE_CD.replace(node.data.P_CODE_CD, ""),
+                Number(node.data.CODE_CD.replace(node.data.P_CODE_CD, ""))
+              );
+              seq = Number.isNaN(seq) ? 0 : seq;
+              return seq;
+            })
+          ) + 1;
 
     const rowCnt = renderedNodes.length || 0;
 
-    gridRef.current?.api.applyTransaction({
-      addIndex: rowCnt,
-      add: [
-        {
-          ...defaultRow,
-          CRUD_FLAG: "C",
-          CODE_CD: selectedNode?.CODE_CD + nextSeq.toString().padStart(2, "0"),
-          P_CODE_CD: selectedNode?.key,
-          P_CODE_NM: selectedNode?.title,
-          PERIOD: [dayjs(), dayjs("9999-12-31", "YYYY-MM-DD")],
-          DSP_ORDER: rowCnt + 1,
-        },
-      ],
+    if (rowCnt < 2)
+      gridRef.current?.api.applyTransaction({
+        addIndex: rowCnt,
+        add: [
+          {
+            ...defaultRow,
+            CRUD_FLAG: "C",
+            CODE_CD:
+              refSelectedNode?.current.CODE_CD +
+              nextSeq.toString().padStart(2, "0"),
+            P_CODE_CD: refSelectedNode?.current.key,
+            P_CODE_NM: refSelectedNode?.current.title,
+            PERIOD: [dayjs().format(dateFormat), "9999-12-31"],
+            DSP_ORDER: rowCnt + 1,
+          },
+        ],
+      });
+
+    console.log("rowCnt:", rowCnt);
+
+    gridRef.current?.api.ensureIndexVisible(rowCnt);
+
+    gridRef.current?.api.startEditingCell({
+      rowIndex: rowCnt,
+      colKey: "CODE_NM",
     });
+
+    // gridRef.current?.api.setFocusedCell(0, "CODE_CD");
   };
 
   const handleBtnDelete = (e) => {
@@ -371,6 +399,11 @@ const Grid = forwardRef<any, any>((props, ref) => {
   };
 
   const getCodelist = (params: any) => {
+    console.log("selectedNode:", refSelectedNode?.current);
+    if (refSelectedNode) {
+      params = { ...params, P_CODE_CD: refSelectedNode?.current.CODE_CD };
+    }
+
     request("post", "/sample/codeList", params).then((result) => {
       if (result.code != "S0000001" || result.dataSet.length < 1) {
         messageApi.open({

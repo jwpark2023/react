@@ -43,13 +43,14 @@ const Search = forwardRef<any, any>((props, ref) => {
     form
       .validateFields()
       .then((fields) => {
-        const params = {
+        let params = {
           ...fields,
           PERIOD: [
             fields.PERIOD[0].format(dateFormat),
             fields.PERIOD[1].format(dateFormat),
           ],
         };
+
         refGrid.current.getCodelist(params);
       })
       .catch((e) => {

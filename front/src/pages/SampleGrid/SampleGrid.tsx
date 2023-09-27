@@ -13,9 +13,9 @@ const SampleGrid = () => {
   const refSearch = useRef<any>(null);
   const refTree = useRef<any>(null);
   const refGrid = useRef<any>(null);
+  const refSelectedNode = useRef(null);
 
   const [messageApi, contextHolder] = message.useMessage();
-  const [selectedNode, setSelectedNode] = useState<DataNode>();
   const [modalOpen, setModalOpen] = useState(false);
   // const [period, setPeriod] = useState();
   const [modalTitle, setModalTitle] = useState("");
@@ -36,14 +36,14 @@ const SampleGrid = () => {
           ref={refTree}
           refGrid={refGrid}
           messageApi={messageApi}
-          setSelectedNode={setSelectedNode}
+          refSelectedNode={refSelectedNode}
         />
         <Grid
           ref={refGrid}
           refTree={refTree}
           refSearch={refSearch}
           messageApi={messageApi}
-          selectedNode={selectedNode}
+          refSelectedNode={refSelectedNode}
           setModalTitle={setModalTitle}
           setModalOpen={setModalOpen}
         />

@@ -15,7 +15,7 @@ const arrayToTree = (arr, parent) =>
     }));
 
 const LeftTree = forwardRef<any, any>((props, ref) => {
-  const { refGrid, messageApi, setSelectedNode } = props;
+  const { refGrid, messageApi, refSelectedNode } = props;
   const [treeData, setTreeData] = useState([]);
   const [expandedKeys, setExpandedKeys] = useState([]);
   const [selectedKeys, setSelectedKeys] = useState<Key[]>([]);
@@ -50,8 +50,9 @@ const LeftTree = forwardRef<any, any>((props, ref) => {
     });
   };
   const onTreeNodeSelect: TreeProps["onSelect"] = (keys, info) => {
+    console.log("onTreeNodeSelect info:", info);
     setSelectedKeys(keys);
-    setSelectedNode(info.selected ? info.node : undefined);
+    refSelectedNode.current = info.selected ? info.node : undefined;
     refGrid.current.updateColDef(info.node);
     refGrid.current.getCodelist({ P_CODE_CD: keys[0] });
   };
