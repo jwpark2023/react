@@ -255,7 +255,19 @@ const Grid = forwardRef<any, any>((props, ref) => {
       return;
     }
 
-    const rowCnt = gridRef.current?.api.getRenderedNodes().length || 0;
+    const renderedNodes = gridRef.current?.api.getRenderedNodes() || [];
+
+    let nextSeq =
+      Math.max.apply(
+        null,
+        renderedNodes.map((node) => {
+          let seq = Number(node.data.CODE_CD.replace(node.data.P_CODE_CD, ""));
+          seq = Number.isNaN(seq) ? 0 : seq;
+          return seq;
+        }) || [0]
+      ) + 1;
+
+    const rowCnt = renderedNodes.length || 0;
 
     gridRef.current?.api.applyTransaction({
       addIndex: rowCnt,
@@ -263,6 +275,7 @@ const Grid = forwardRef<any, any>((props, ref) => {
         {
           ...defaultRow,
           CRUD_FLAG: "C",
+          CODE_CD: selectedNode?.CODE_CD + nextSeq.toString().padStart(2, "0"),
           P_CODE_CD: selectedNode?.key,
           P_CODE_NM: selectedNode?.title,
           PERIOD: [dayjs(), dayjs("9999-12-31", "YYYY-MM-DD")],
