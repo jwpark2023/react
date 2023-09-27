@@ -283,8 +283,8 @@ const Grid = forwardRef<any, any>((props, ref) => {
 
     const rowCnt = renderedNodes.length || 0;
 
-    if (rowCnt < 2)
-      gridRef.current?.api.applyTransaction({
+    gridRef.current?.api.applyTransactionAsync(
+      {
         addIndex: rowCnt,
         add: [
           {
@@ -299,18 +299,13 @@ const Grid = forwardRef<any, any>((props, ref) => {
             DSP_ORDER: rowCnt + 1,
           },
         ],
-      });
-
-    console.log("rowCnt:", rowCnt);
-
-    gridRef.current?.api.ensureIndexVisible(rowCnt);
-
-    gridRef.current?.api.startEditingCell({
-      rowIndex: rowCnt,
-      colKey: "CODE_NM",
-    });
-
-    // gridRef.current?.api.setFocusedCell(0, "CODE_CD");
+      },
+      (e) =>
+        gridRef.current?.api.startEditingCell({
+          rowIndex: rowCnt,
+          colKey: "CODE_NM",
+        })
+    );
   };
 
   const handleBtnDelete = (e) => {
@@ -400,7 +395,7 @@ const Grid = forwardRef<any, any>((props, ref) => {
 
   const getCodelist = (params: any) => {
     console.log("selectedNode:", refSelectedNode?.current);
-    if (refSelectedNode) {
+    if (refSelectedNode?.current) {
       params = { ...params, P_CODE_CD: refSelectedNode?.current.CODE_CD };
     }
 
