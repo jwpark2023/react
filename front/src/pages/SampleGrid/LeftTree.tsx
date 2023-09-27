@@ -15,7 +15,7 @@ const arrayToTree = (arr, parent, addLeaf = true) => {
       ...child,
       title: child.CODE_NM,
       key: child.CODE_CD,
-      children: arrayToTree(arr, child.CODE_CD),
+      children: arrayToTree(arr, child.CODE_CD, addLeaf),
     }));
 };
 
@@ -66,7 +66,7 @@ const LeftTree = forwardRef<any, any>((props, ref) => {
         return;
       }
 
-      let treeData = arrayToTree(result.dataSet, "root", true);
+      let treeData = arrayToTree(result.dataSet, "root");
       let keyList = [];
       findExpandedKey(treeData, keyList);
 
