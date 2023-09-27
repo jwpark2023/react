@@ -18,6 +18,7 @@
              , EXP_FR_DT
              , EXP_TO_DT
              , USE_YN
+             , ATTR1_JSON
              , ATTR2_JSON
              , ATTR3_JSON
              , ATTR4_JSON
