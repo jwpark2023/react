@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Form, Input, Modal, Select, TreeSelect } from "antd";
 import { request } from "src/utils/axios";
+import { arrayToTree } from "src/utils/commUtil";
 
 const CellPop = (props) => {
   const [form] = Form.useForm();
@@ -8,16 +9,16 @@ const CellPop = (props) => {
 
   const [inpuValue, setInputValue] = useState("");
 
-  const arrayToTree = (arr, parent) =>
-    arr
-      .filter((item) => item.P_CODE_CD === parent)
-      .map((child) => ({
-        ...child,
-        title: child.CODE_NM,
-        value: child.CODE_NM,
-        key: child.CODE_CD,
-        children: arrayToTree(arr, child.CODE_CD),
-      }));
+  // const arrayToTree = (arr, parent) =>
+  //   arr
+  //     .filter((item) => item.P_CODE_CD === parent)
+  //     .map((child) => ({
+  //       ...child,
+  //       title: child.CODE_NM,
+  //       value: child.CODE_NM,
+  //       key: child.CODE_CD,
+  //       children: arrayToTree(arr, child.CODE_CD),
+  //     }));
 
   const [treeData, setTreeData] = useState([]);
 
@@ -25,6 +26,7 @@ const CellPop = (props) => {
     form.setFieldsValue({
       name: props.modalNameValue,
       type: props.modalTypeValue,
+      cmmCode: undefined,
     });
   };
 
@@ -46,7 +48,7 @@ const CellPop = (props) => {
         });
         return;
       }
-      setTreeData(arrayToTree(result.dataSet, "root"));
+      setTreeData(arrayToTree(result.dataSet, "root", false));
     });
   };
 
@@ -57,15 +59,15 @@ const CellPop = (props) => {
   };
 
   const handleOk = () => {
-    console.log(form.getFieldValue("cmmCode"));
     var result = {
       name: form.getFieldValue("name"),
       type: form.getFieldValue("type"),
+      cmmCode: form.getFieldValue("cmmCode"),
     };
 
-    console.log(result);
-
-    // props.setModalResult("");
+    console.log("grid", props.refGrid);
+    console.log("props", props);
+    console.log("result", result);
   };
 
   const handleCancel = () => {

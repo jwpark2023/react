@@ -50,6 +50,7 @@ const SampleGrid = () => {
         />
       </div>
       <CellPop
+        refGrid={refGrid}
         modalTitle={modalTitle}
         modalOpen={modalOpen}
         setModalOpen={setModalOpen}
