@@ -365,22 +365,20 @@ const Grid = forwardRef<any, any>((props, ref) => {
       }
     );
 
-    console.log("getOptionList", options);
     return options;
   };
 
-  const updateColDef = (node) => {
+  const updateColDef = async (node) => {
     let colDefs: ColDef<any>[] = gridRef.current?.api.getColumnDefs() || [];
 
     let regExAttrVal = /^ATTR([0-9]{1,2})_VAL$/;
-    colDefs.forEach((colDef, index) => {
+    colDefs.forEach(async (colDef, index) => {
       const colId = colDef.colId || "";
       if (regExAttrVal.test(colId)) {
         colDef.hide = true;
         colDef.cellRenderer = undefined;
 
         const colHeaderInfo = node[colId.replace("_VAL", "_JSON")];
-
         if (colHeaderInfo) {
           colDef.hide = false;
           const hInfo = JSON.parse(colHeaderInfo);
@@ -393,7 +391,7 @@ const Grid = forwardRef<any, any>((props, ref) => {
             case "Select":
               colDef.cellRenderer = "selectboxrenderer";
               colDef.cellRendererParams = {
-                options: getOptionList(hInfo.code),
+                options: await getOptionList(hInfo.code),
               };
               break;
             case "Date":
