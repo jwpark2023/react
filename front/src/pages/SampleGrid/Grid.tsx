@@ -59,7 +59,6 @@ const Grid = forwardRef<any, any>((props, ref) => {
     setModalTitle,
     setModalOpen,
     refSelectedNode,
-    selectedNode,
     setModalNameValue,
     setModalTypeValue,
   } = props;
@@ -113,7 +112,7 @@ const Grid = forwardRef<any, any>((props, ref) => {
       field: "P_CODE_NM",
       headerName: "분류",
       minWidth: 120,
-      rowDrag: true,
+      rowDrag: () => !(refSelectedNode?.current == undefined),
     },
     { field: "CODE_CD", headerName: "코드", minWidth: 120, flex: 1 },
     { field: "CODE_NM", headerName: "코드명", minWidth: 120, flex: 1 },
@@ -254,7 +253,6 @@ const Grid = forwardRef<any, any>((props, ref) => {
   }, []);
 
   const handleBtnAdd = (e) => {
-    console.log("refSelectedNode:", refSelectedNode);
     if (refSelectedNode?.current == undefined) {
       messageApi.open({
         type: "warn",
@@ -368,7 +366,7 @@ const Grid = forwardRef<any, any>((props, ref) => {
     return options;
   };
 
-  const updateColDef = async (node) => {
+  const updateColDef = (node) => {
     let colDefs: ColDef<any>[] = gridRef.current?.api.getColumnDefs() || [];
 
     let regExAttrVal = /^ATTR([0-9]{1,2})_VAL$/;
