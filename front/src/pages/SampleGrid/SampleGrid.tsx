@@ -14,6 +14,7 @@ const SampleGrid = () => {
   const refTree = useRef<any>(null);
   const refGrid = useRef<any>(null);
   const refSelectedNode = useRef(null);
+  const refCellClickdNode = useRef(null);
 
   const [messageApi, contextHolder] = message.useMessage();
   const [modalOpen, setModalOpen] = useState(false);
@@ -43,6 +44,7 @@ const SampleGrid = () => {
           refSearch={refSearch}
           messageApi={messageApi}
           refSelectedNode={refSelectedNode}
+          refCellClickdNode={refCellClickdNode}
           setModalTitle={setModalTitle}
           setModalNameValue={setModalNameValue}
           setModalTypeValue={setModalTypeValue}
@@ -50,12 +52,12 @@ const SampleGrid = () => {
         />
       </div>
       <CellPop
-        refGrid={refGrid}
         modalTitle={modalTitle}
         modalOpen={modalOpen}
         setModalOpen={setModalOpen}
         setModalResult={setModalResult}
         messageApi={messageApi}
+        refCellClickdNode={refCellClickdNode}
         modalNameValue={modalNameValue}
         modalTypeValue={modalTypeValue}
       ></CellPop>

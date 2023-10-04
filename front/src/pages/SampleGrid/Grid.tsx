@@ -225,7 +225,7 @@ const Grid = forwardRef<any, any>((props, ref) => {
 
   // Example of consuming Grid Event
   const cellClickedListener = (e) => {
-    // console.log(e.value);
+    props.refCellClickdNode.current = e;
     if (e.column.colId.includes("JSON")) {
       if (e.value !== undefined) {
         setModalNameValue(JSON.parse(e.value).name);
