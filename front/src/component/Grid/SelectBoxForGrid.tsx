@@ -1,15 +1,12 @@
-import React,{useState} from 'react';
-import { Select } from 'antd';
+import React, { useState } from "react";
+import { Select } from "antd";
 
-
-function SelectBoxForGrid (props) {
+function SelectBoxForGrid(props) {
   // const cellValue = props.valueFormatted ? props.valueFormatted : props.value;
-
-
   const handleChange = (value: string) => {
-  console.log(`selected ${value}`);
-};
-
+    props.setValue(value);
+    console.log(`selected ${value}`);
+  };
 
   return (
     <span>
@@ -17,15 +14,11 @@ function SelectBoxForGrid (props) {
         placeholder="Select"
         style={{ width: 80 }}
         onChange={handleChange}
-        options={[
-            { value: 'jack', label: 'Jack' },
-            { value: 'lucy', label: 'Lucy' },
-            { value: 'Yiminghe', label: 'yiminghe' },
-            { value: 'disabled', label: 'Disabled', disabled: true },
-        ]}
-         />
+        filterOption={true}
+        options={props.options}
+      />
     </span>
   );
-};
+}
 
 export default SelectBoxForGrid;

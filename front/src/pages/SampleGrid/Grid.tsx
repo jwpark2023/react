@@ -26,9 +26,9 @@ const defaultRow = {
   CODE_LVL: 1,
   P_CODE_CD: null,
   DSP_ORDER: null,
-  USE_YN: null,
+  USE_YN: "Y",
   EXP_FR_DT: "2001-01-01",
-  EXP_TO_DT: "9999-01-01",
+  EXP_TO_DT: "9999-12-31",
   ATTR1_JSON: null,
   ATTR1_VAL: null,
   ATTR2_JSON: null,
@@ -350,6 +350,25 @@ const Grid = forwardRef<any, any>((props, ref) => {
     });
   };
 
+  const getOptionList = async (code) => {
+    let options = [];
+    await request("post", "/sample/codeList", { P_CODE_CD: code }).then(
+      (result) => {
+        if (result.code != "S0000001") {
+          return [];
+        }
+
+        options = result.dataSet.map((data) => ({
+          label: data.CODE_NM,
+          value: data.CODE_CD,
+        }));
+      }
+    );
+
+    console.log("getOptionList", options);
+    return options;
+  };
+
   const updateColDef = (node) => {
     let colDefs: ColDef<any>[] = gridRef.current?.api.getColumnDefs() || [];
 
@@ -373,6 +392,9 @@ const Grid = forwardRef<any, any>((props, ref) => {
               break;
             case "Select":
               colDef.cellRenderer = "selectboxrenderer";
+              colDef.cellRendererParams = {
+                options: getOptionList(hInfo.code),
+              };
               break;
             case "Date":
               colDef.cellRenderer = "datepickerrenderer";
