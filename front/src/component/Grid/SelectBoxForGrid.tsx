@@ -16,6 +16,7 @@ function SelectBoxForGrid(props) {
         onChange={handleChange}
         filterOption={true}
         options={props.options}
+        value={props.value}
       />
     </span>
   );
