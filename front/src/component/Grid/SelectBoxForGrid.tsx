@@ -12,7 +12,7 @@ function SelectBoxForGrid(props) {
     <span>
       <Select
         placeholder="Select"
-        style={{ width: 80 }}
+        style={{ width: "100%" }}
         onChange={handleChange}
         filterOption={true}
         options={props.options}
