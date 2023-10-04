@@ -6,6 +6,7 @@ function CheckBoxForGrid(props) {
   // const cellValue = props.valueFormatted ? props.valueFormatted : props.value;
 
   const onChange = (e: CheckboxChangeEvent) => {
+    console.log(e.target.checked);
     if (e.target.checked) {
       props.setValue("Y");
     } else {
@@ -17,7 +18,8 @@ function CheckBoxForGrid(props) {
     <span>
       <Checkbox
         onChange={onChange}
-        checked={props.value ? "Y" : props.setValue("Y")}
+        // checked={true}
+        checked={props.value && props.value === "Y" ? true : false}
       ></Checkbox>
     </span>
   );

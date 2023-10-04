@@ -59,6 +59,9 @@ const Grid = forwardRef<any, any>((props, ref) => {
     setModalTitle,
     setModalOpen,
     refSelectedNode,
+    selectedNode,
+    setModalNameValue,
+    setModalTypeValue,
   } = props;
   const gridRef = useRef<AgGridReact<any>>(null);
 
@@ -223,12 +226,14 @@ const Grid = forwardRef<any, any>((props, ref) => {
 
   // Example of consuming Grid Event
   const cellClickedListener = (e) => {
-    console.log(e.column.colId);
-    console.log(e.column);
-    console.log(e);
-    if (e.column.colId.includes("ATTR")) {
-      if (e.value != undefined) {
-        console.log(JSON.parse(e.value));
+    // console.log(e.value);
+    if (e.column.colId.includes("JSON")) {
+      if (e.value !== undefined) {
+        setModalNameValue(JSON.parse(e.value).name);
+        setModalTypeValue(JSON.parse(e.value).type);
+      } else {
+        setModalNameValue("");
+        setModalTypeValue("");
       }
       let title =
         "(" +

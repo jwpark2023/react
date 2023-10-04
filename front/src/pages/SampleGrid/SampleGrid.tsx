@@ -17,7 +17,6 @@ const SampleGrid = () => {
 
   const [messageApi, contextHolder] = message.useMessage();
   const [modalOpen, setModalOpen] = useState(false);
-  // const [period, setPeriod] = useState();
   const [modalTitle, setModalTitle] = useState("");
   const [modalNameValue, setModalNameValue] = useState("");
   const [modalTypeValue, setModalTypeValue] = useState("");
@@ -45,6 +44,8 @@ const SampleGrid = () => {
           messageApi={messageApi}
           refSelectedNode={refSelectedNode}
           setModalTitle={setModalTitle}
+          setModalNameValue={setModalNameValue}
+          setModalTypeValue={setModalTypeValue}
           setModalOpen={setModalOpen}
         />
       </div>
@@ -53,6 +54,7 @@ const SampleGrid = () => {
         modalOpen={modalOpen}
         setModalOpen={setModalOpen}
         setModalResult={setModalResult}
+        messageApi={messageApi}
         modalNameValue={modalNameValue}
         modalTypeValue={modalTypeValue}
       ></CellPop>
