@@ -17,6 +17,7 @@ import { request } from "src/utils/axios";
 
 import { Button, Checkbox, Form } from "antd";
 import dayjs from "dayjs";
+import * as XLSX from "xlsx";
 
 const dateFormat = "YYYY-MM-DD";
 
@@ -51,6 +52,32 @@ const defaultRow = {
   ATTR10_VAL: null,
 };
 
+const xlsJsonToRowData = (xlsJson, colDef: ColDef<any>[]) => {
+  const rowData = [];
+
+  if (xlsJson.length < 2) return [];
+
+  const hIndex = {};
+  colDef.forEach((col) => {
+    if (xlsJson[0].includes(col.headerName)) {
+      hIndex[col.field] = xlsJson[0].indexOf(col.headerName);
+    }
+  });
+
+  xlsJson.forEach((row, index) => {
+    if (index > 0) {
+      const dRow = {};
+      Object.entries(hIndex).forEach(([key, value]) => {
+        dRow[key] = row[parseInt(value.toString())];
+      });
+      dRow["CRUD_FLAG"] = "C";
+      rowData.push(dRow);
+    }
+  });
+
+  return rowData;
+};
+
 const Grid = forwardRef<any, any>((props, ref) => {
   const {
     refTree,
@@ -62,7 +89,9 @@ const Grid = forwardRef<any, any>((props, ref) => {
     setModalNameValue,
     setModalTypeValue,
   } = props;
+
   const gridRef = useRef<AgGridReact<any>>(null);
+  const selectFile = useRef(null);
 
   useImperativeHandle(
     ref,
@@ -465,12 +494,37 @@ const Grid = forwardRef<any, any>((props, ref) => {
   const handleRowDragEnd = (e) => {
     gridRef.current?.api.forEachNode((node) => {
       let newOrder = (node.rowIndex || 0) + 1;
-      console.log("node", newOrder, node.data.DSP_ORDER, node);
       if (newOrder != node.data.DSP_ORDER) {
-        node.setDataValue("CRUD_FLAG", "U");
+        if (!["C", "D"].includes(node.data.CRUD_FLAG)) {
+          node.setDataValue("CRUD_FLAG", "U");
+        }
         node.setDataValue("DSP_ORDER", node.rowIndex || 0 + 1);
       }
     });
+  };
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.readAsArrayBuffer(file);
+
+    reader.onload = (e) => {
+      const data = new Uint8Array(e.target.result as ArrayBufferLike);
+      const workbook = XLSX.read(data, { type: "array" });
+
+      // 첫 번째 시트를 가져옴
+      const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+
+      // 셀 데이터를 파싱하여 출력
+      const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+      const rowData = xlsJsonToRowData(jsonData, columnDefs);
+
+      console.log("handleFileUpload:", rowData);
+
+      gridRef.current?.api.applyTransaction({
+        add: rowData,
+      });
+    };
   };
 
   return (
@@ -489,7 +543,17 @@ const Grid = forwardRef<any, any>((props, ref) => {
             width: "80%",
           }}
         >
-          <Button size={"small"} style={{ width: 90 }} onClick={buttonListener}>
+          <input
+            ref={selectFile}
+            type="file"
+            style={{ display: "none" }}
+            onChange={handleFileUpload}
+          />
+          <Button
+            size={"small"}
+            style={{ width: 90 }}
+            onClick={() => selectFile.current.click()}
+          >
             엑셀 업로드
           </Button>
           <Button size={"small"} style={{ width: 90 }} onClick={buttonListener}>
