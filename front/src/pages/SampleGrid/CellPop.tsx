@@ -1,9 +1,11 @@
-import { useEffect, useState, forwardRef } from "react";
+import { useEffect, useState, forwardRef, useRef } from "react";
 import { Form, Input, Modal, Select, TreeSelect } from "antd";
 import { request } from "src/utils/axios";
 import { arrayToTree } from "src/utils/commUtil";
 
 const CellPop = forwardRef<any, any>((props) => {
+  const treeSelectRef = useRef<any>(null);
+
   const {
     refCellClickdNode,
     modalNameValue,
@@ -17,13 +19,18 @@ const CellPop = forwardRef<any, any>((props) => {
   const { Option } = Select;
   const [inpuValue, setInputValue] = useState("");
   const [treeData, setTreeData] = useState([]);
+  const [treeSelectEnable, setTreeSelectEnable] = useState(false);
 
   const initFormValues = () => {
     form.setFieldsValue({
       name: modalNameValue,
       type: modalTypeValue,
-      cmmCode: undefined,
+      code: undefined,
     });
+
+    form.getFieldValue("type") !== "Select"
+      ? setTreeSelectEnable(true)
+      : setTreeSelectEnable(false);
   };
 
   useEffect(() => {
@@ -48,17 +55,21 @@ const CellPop = forwardRef<any, any>((props) => {
     });
   };
 
-  const onChange = (
+  const onInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setInputValue(e.target.value);
+  };
+
+  const onSelectChange = (value) => {
+    value === "Select" ? setTreeSelectEnable(false) : setTreeSelectEnable(true);
   };
 
   const handleOk = () => {
     let result = {
       name: form.getFieldValue("name"),
       type: form.getFieldValue("type"),
-      cmmCode: form.getFieldValue("cmmCode"),
+      code: form.getFieldValue("code"),
     };
 
     refCellClickdNode.current.node.setDataValue(
@@ -93,10 +104,10 @@ const CellPop = forwardRef<any, any>((props) => {
           //   },
           // ]}
         >
-          <Input onChange={onChange} />
+          <Input onChange={onInputChange} />
         </Form.Item>
         <Form.Item name="type" label="유형">
-          <Select>
+          <Select onChange={onSelectChange}>
             <Option value="Text">텍스트</Option>
             <Option value="Select">콤보박스</Option>
             <Option value="Date">달력</Option>
@@ -105,8 +116,10 @@ const CellPop = forwardRef<any, any>((props) => {
             <Option value="Image">사진</Option>
           </Select>
         </Form.Item>
-        <Form.Item name="cmmCode" label="공통코드">
+        <Form.Item name="code" label="공통코드">
           <TreeSelect
+            ref={treeSelectRef}
+            disabled={treeSelectEnable}
             showSearch
             style={{ width: "100%" }}
             // value={value}

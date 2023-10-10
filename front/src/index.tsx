@@ -6,6 +6,7 @@ import promiseMiddlerware from "redux-promise";
 import reduxThunk from "redux-thunk";
 import App from "./App";
 import reducer from "./data/redux/reducers/rootReducer";
+// import i18n from "src/config/i18n";
 
 const createStoreWidthMiddleware = applyMiddleware(
   promiseMiddlerware,

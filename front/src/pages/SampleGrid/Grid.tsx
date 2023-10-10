@@ -17,7 +17,9 @@ import { request } from "src/utils/axios";
 
 import { Button, Checkbox, Form } from "antd";
 import dayjs from "dayjs";
+import i18n from "src/config/i18n";
 import * as XLSX from "xlsx";
+
 
 const dateFormat = "YYYY-MM-DD";
 
@@ -93,6 +95,12 @@ const Grid = forwardRef<any, any>((props, ref) => {
   const gridRef = useRef<AgGridReact<any>>(null);
   const selectFile = useRef(null);
 
+  enum crudColor {
+    U = "orange", // 문자열을 입력할 수도 있다.
+    C = "blue",
+    D = "red",
+  }
+
   useImperativeHandle(
     ref,
     () => {
@@ -105,13 +113,22 @@ const Grid = forwardRef<any, any>((props, ref) => {
   );
 
   const crudStyle = (params) => {
-    if (params.value === "U") {
-      return { color: "orange", backgroundColor: "orange" };
-    } else if (params.value === "C") {
-      return { color: "blue", backgroundColor: "blue" };
-    } else if (params.value === "D") {
-      return { color: "red", backgroundColor: "red" };
+    switch (params.value) {
+      case "U":
+        return { color: crudColor.U, backgroundColor: crudColor.U };
+      case "C":
+        return { color: crudColor.C, backgroundColor: crudColor.C };
+      case "D":
+        return { color: crudColor.D, backgroundColor: crudColor.D };
     }
+
+    // if (params.value === "U") {
+    //   return { color: "orange", backgroundColor: "orange" };
+    // } else if (params.value === "C") {
+    //   return { color: "blue", backgroundColor: "blue" };
+    // } else if (params.value === "D") {
+    //   return { color: "red", backgroundColor: "red" };
+    // }
   };
 
   const valueDisplayFormatter = (params) => {
@@ -139,7 +156,7 @@ const Grid = forwardRef<any, any>((props, ref) => {
     },
     {
       field: "P_CODE_NM",
-      headerName: "분류",
+      headerName: i18n.t("classification"),
       minWidth: 120,
       rowDrag: () => !(refSelectedNode?.current == undefined),
     },
@@ -255,6 +272,8 @@ const Grid = forwardRef<any, any>((props, ref) => {
   // Example of consuming Grid Event
   const cellClickedListener = (e) => {
     props.refCellClickdNode.current = e;
+
+    console.log("e", e.column);
     if (e.column.colId.includes("JSON")) {
       if (e.value !== undefined) {
         setModalNameValue(JSON.parse(e.value).name);
@@ -263,14 +282,8 @@ const Grid = forwardRef<any, any>((props, ref) => {
         setModalNameValue("");
         setModalTypeValue("");
       }
-      let title =
-        "(" +
-        e.data.P_CODE_NM +
-        "_" +
-        e.data.CODE_NM +
-        ")" +
-        " : " +
-        e.column.colId;
+      let title = `${e.data.CODE_NM} > ${e.column.colDef.headerName}`;
+
       setModalTitle(title);
       setModalOpen(true);
     }
