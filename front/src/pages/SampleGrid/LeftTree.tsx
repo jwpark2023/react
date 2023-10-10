@@ -62,12 +62,11 @@ const LeftTree = forwardRef<any, any>((props, ref) => {
     });
   };
 
-  const onTreeNodeSelect: TreeProps["onSelect"] = (keys, info) => {
-    console.log("onTreeNodeSelect info:", info);
+  const onTreeNodeSelect: TreeProps["onSelect"] = async (keys, info) => {
     setSelectedKeys(keys);
     refSelectedNode.current = info.selected ? info.node : undefined;
-    refGrid.current.updateColDef(info.node);
-    refGrid.current.getCodelist({ P_CODE_CD: keys[0] });
+    await refGrid.current.updateColDef(info.node);
+    refGrid.current.getCodelist({ P_CODE_CD: keys });
   };
 
   return (

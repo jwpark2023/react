@@ -8,7 +8,7 @@ export const arrayToTree = (arr, parent, addLeaf = true) => {
     .map((child) => ({
       ...child,
       title: child.CODE_NM,
-      value: child.CODE_NM,
+      value: child.CODE_CD,
       key: child.CODE_CD,
       children: arrayToTree(arr, child.CODE_CD, addLeaf),
     }));

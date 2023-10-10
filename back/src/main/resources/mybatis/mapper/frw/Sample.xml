@@ -65,8 +65,8 @@
           FROM CMN_CODE A
              , CMN_CODE B
          WHERE B.CODE_CD = A.P_CODE_CD
-         <if test='P_CODE_CD != null and P_CODE_CD != ""'>
-           AND A.P_CODE_CD = #{P_CODE_CD}
+         <if test='P_CODE_CD != null and P_CODE_CD.size() > 0'>
+           AND A.P_CODE_CD IN <foreach collection="P_CODE_CD" item="item" open="(" close=")" separator=",">#{item}</foreach>
          </if>
          <if test='SEARCH_TEXT != null and SEARCH_TEXT != ""'>
            AND INSTR(CONCAT(IFNULL(A.CODE_NM,''),IFNULL(A.ATTR1_VAL,''),IFNULL(A.ATTR2_VAL,''),IFNULL(A.ATTR3_VAL,''),IFNULL(A.ATTR4_VAL,''),IFNULL(A.ATTR5_VAL,'')), #{SEARCH_TEXT}) <![CDATA[>]]> 0

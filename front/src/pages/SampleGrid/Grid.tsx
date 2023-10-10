@@ -13,6 +13,8 @@ import "ag-grid-enterprise/styles/ag-grid.css"; // Core grid CSS, always needed
 import "ag-grid-enterprise/styles/ag-theme-alpine.css"; // Optional theme CSS
 
 import CMMGrid from "src/component/Grid/CMMGrid";
+import CellPop from "./CellPop";
+
 import { request } from "src/utils/axios";
 
 import { Button, Checkbox, Form } from "antd";
@@ -79,17 +81,13 @@ const xlsJsonToRowData = (xlsJson, colDef: ColDef<any>[]) => {
   return rowData;
 };
 
+const valueDisplayFormatter = (params) => {
+  let name = params.value ? JSON.parse(params.value).name : undefined;
+  return name;
+};
+
 const Grid = forwardRef<any, any>((props, ref) => {
-  const {
-    refTree,
-    refSearch,
-    messageApi,
-    setModalTitle,
-    setModalOpen,
-    refSelectedNode,
-    setModalNameValue,
-    setModalTypeValue,
-  } = props;
+  const { refTree, refSearch, messageApi, refSelectedNode } = props;
 
   const gridRef = useRef<AgGridReact<any>>(null);
   const selectFile = useRef(null);
@@ -120,20 +118,8 @@ const Grid = forwardRef<any, any>((props, ref) => {
       case "D":
         return { color: crudColor.D, backgroundColor: crudColor.D };
     }
-
-    // if (params.value === "U") {
-    //   return { color: "orange", backgroundColor: "orange" };
-    // } else if (params.value === "C") {
-    //   return { color: "blue", backgroundColor: "blue" };
-    // } else if (params.value === "D") {
-    //   return { color: "red", backgroundColor: "red" };
-    // }
   };
 
-  const valueDisplayFormatter = (params) => {
-    let name = params.value ? JSON.parse(params.value).name : undefined;
-    return name;
-  };
   const defaultColDef = useMemo(
     () => ({
       sortable: true,
@@ -145,6 +131,7 @@ const Grid = forwardRef<any, any>((props, ref) => {
     []
   );
 
+  const [modalProps, setModalProps] = useState({ open: false });
   const [columnDefs, setColumnDefs] = useState<ColDef<any>[]>([
     {
       field: "CRUD_FLAG",
@@ -278,23 +265,41 @@ const Grid = forwardRef<any, any>((props, ref) => {
   // Form
   const [form] = Form.useForm();
 
+  const defaultModalProps = {
+    open: false,
+    title: "",
+    attrName: "",
+    attrType: "text",
+    attrCode: "",
+  };
+
   // Example of consuming Grid Event
   const cellClickedListener = (e) => {
-    props.refCellClickdNode.current = e;
-
     if (e.column.colId.includes("JSON")) {
+      let mProps = {
+        ...defaultModalProps,
+        open: true,
+        title: `${e.data.CODE_NM} > ${e.column.colDef.headerName}`,
+      };
       if (e.value !== undefined) {
-        setModalNameValue(JSON.parse(e.value).name);
-        setModalTypeValue(JSON.parse(e.value).type);
-      } else {
-        setModalNameValue("");
-        setModalTypeValue("");
+        mProps.attrName = JSON.parse(e.value).name;
+        mProps.attrType = JSON.parse(e.value).type;
+        mProps.attrCode = JSON.parse(e.value).code;
       }
-      let title = `${e.data.CODE_NM} > ${e.column.colDef.headerName}`;
 
-      setModalTitle(title);
-      setModalOpen(true);
+      setModalProps(mProps);
     }
+  };
+
+  const handleModalResult = (result) => {
+    if (result) {
+      const currentCell = gridRef.current.api.getFocusedCell();
+      gridRef.current.api
+        .getDisplayedRowAtIndex(currentCell.rowIndex)
+        .setDataValue(currentCell.column.getColId(), JSON.stringify(result));
+      console.log("getFocusedCell", gridRef.current.api.getFocusedCell());
+    }
+    setModalProps(defaultModalProps);
   };
 
   const handleBtnDown = (e) => {
@@ -400,7 +405,7 @@ const Grid = forwardRef<any, any>((props, ref) => {
 
   const handleBtnSave = (e) => {
     let data: any[] = [];
-    gridRef.current?.api.forEachNode((node) => {
+    gridRef.current.api.forEachNode((node) => {
       if (["C", "U", "D"].includes(node?.data.CRUD_FLAG)) {
         node.data.EXP_FR_DT = node.data.PERIOD[0];
         node.data.EXP_TO_DT = node.data.PERIOD[1];
@@ -421,7 +426,6 @@ const Grid = forwardRef<any, any>((props, ref) => {
   };
 
   const getOptionList = async (code) => {
-    console.log(code);
     let options = [];
     await request("post", "/sample/codeList", { P_CODE_CD: code }).then(
       (result) => {
@@ -429,31 +433,40 @@ const Grid = forwardRef<any, any>((props, ref) => {
           return [];
         }
 
-        options = result.dataSet.map((data) => ({
-          label: data.CODE_NM,
-          value: data.CODE_CD,
-        }));
+        options = result.dataSet;
       }
     );
-    console.log("option", options);
     return options;
   };
 
-  const updateColDef = (node) => {
+  const updateColDef = async (node) => {
     let colDefs: ColDef<any>[] = gridRef.current?.api.getColumnDefs() || [];
-
     let regExAttrVal = /^ATTR([0-9]{1,2})_VAL$/;
-    colDefs.forEach(async (colDef, index) => {
+
+    let pCodeList = [];
+
+    // selectBox쓰는 속성들 코드리스트 전부를 한번에 조회한 후, 각 속성의 options로 셋팅한다.
+    colDefs.forEach((colDef) => {
+      const colId = colDef.colId || "";
+      if (regExAttrVal.test(colId)) {
+        const colHeaderInfo = node[colId.replace("_VAL", "_JSON")];
+
+        if (colHeaderInfo) {
+          const hInfo = JSON.parse(colHeaderInfo);
+          pCodeList.push(hInfo.code);
+        }
+      }
+    });
+
+    let codeList = pCodeList.length > 0 ? await getOptionList(pCodeList) : [];
+
+    colDefs.forEach((colDef) => {
       const colId = colDef.colId || "";
       if (regExAttrVal.test(colId)) {
         colDef.hide = true;
         colDef.cellRenderer = undefined;
-
-        // console.log("node", node);
-
         const colHeaderInfo = node[colId.replace("_VAL", "_JSON")];
 
-        console.log("colHeaderInfo", colHeaderInfo);
         if (colHeaderInfo) {
           colDef.hide = false;
           const hInfo = JSON.parse(colHeaderInfo);
@@ -466,8 +479,14 @@ const Grid = forwardRef<any, any>((props, ref) => {
             case "Select":
               console.log("select?");
               colDef.cellRenderer = "selectboxrenderer";
+
               colDef.cellRendererParams = {
-                options: await getOptionList(hInfo.code),
+                options: codeList
+                  .filter((data) => data.P_CODE_CD == hInfo.code)
+                  .map((data) => ({
+                    label: data.CODE_NM,
+                    value: data.CODE_CD,
+                  })),
               };
               break;
             case "Date":
@@ -490,14 +509,12 @@ const Grid = forwardRef<any, any>((props, ref) => {
         }
       }
     });
-
-    setColumnDefs(colDefs);
+    gridRef.current.api.setColumnDefs(colDefs);
   };
 
   const getCodelist = (params: any) => {
-    console.log("selectedNode:", refSelectedNode?.current);
-    if (refSelectedNode?.current) {
-      params = { ...params, P_CODE_CD: refSelectedNode?.current.CODE_CD };
+    if (refSelectedNode.current) {
+      params = { ...params, P_CODE_CD: [refSelectedNode.current.CODE_CD] };
     }
 
     request("post", "/sample/codeList", params).then((result) => {
@@ -526,18 +543,18 @@ const Grid = forwardRef<any, any>((props, ref) => {
     }
   };
 
-  const handleChkAttrNm = (e) => {
-    let colDefs: ColDef<any>[] = gridRef.current?.api.getColumnDefs() || [];
+  const handleChkAttrNm = (isChecked: boolean) => {
+    let colDefs: ColDef<any>[] = gridRef.current.api.getColumnDefs() || [];
 
     let regExAttrVal = /^ATTR([0-9]{1,2})_JSON$/;
 
     colDefs.forEach((colDef) => {
       const colId = colDef.colId || "";
       if (regExAttrVal.test(colId)) {
-        colDef.hide = !e.target.checked;
+        colDef.hide = !isChecked;
       }
     });
-    setColumnDefs(colDefs);
+    gridRef.current.api.setColumnDefs(colDefs);
   };
 
   const handleRowDragEnd = (e) => {
@@ -583,7 +600,7 @@ const Grid = forwardRef<any, any>((props, ref) => {
       <div style={{ display: "flex" }}>
         <Checkbox
           style={{ paddingLeft: 1, width: "20%" }}
-          onChange={handleChkAttrNm}
+          onChange={(e) => handleChkAttrNm(e.target.checked)}
         >
           속성명 표시
         </Checkbox>
@@ -643,6 +660,7 @@ const Grid = forwardRef<any, any>((props, ref) => {
           onRowDragEnd={handleRowDragEnd}
         />
       </div>
+      <CellPop modalProps={modalProps} handleModalResult={handleModalResult} />
     </div>
   );
 });

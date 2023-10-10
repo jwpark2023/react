@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Select } from "antd";
 
 function SelectBoxForGrid(props) {
-  console.log("selecrender", props.options);
+  console.log("selecrender", props);
 
   // const cellValue = props.valueFormatted ? props.valueFormatted : props.value;
   const handleChange = (value: string) => {

@@ -4,17 +4,9 @@ import { request } from "src/utils/axios";
 import { arrayToTree } from "src/utils/commUtil";
 
 const CellPop = forwardRef<any, any>((props) => {
-  const treeSelectRef = useRef<any>(null);
-
-  const {
-    refCellClickdNode,
-    modalNameValue,
-    modalTypeValue,
-    messageApi,
-    setModalOpen,
-    modalTitle,
-    modalOpen,
-  } = props;
+  console.log("CellPop", props);
+  const { open, title, attrName, attrType, attrCode } = props.modalProps;
+  const handleModalResult = props.handleModalResult;
   const [form] = Form.useForm();
   const { Option } = Select;
   const [inpuValue, setInputValue] = useState("");
@@ -24,9 +16,9 @@ const CellPop = forwardRef<any, any>((props) => {
 
   const initFormValues = () => {
     form.setFieldsValue({
-      name: modalNameValue,
-      type: modalTypeValue,
-      code: undefined,
+      name: attrName,
+      type: attrType,
+      code: attrCode,
     });
 
     form.getFieldValue("type") !== "Select"
@@ -46,12 +38,9 @@ const CellPop = forwardRef<any, any>((props) => {
     request("get", "/sample/treeList", null).then((result) => {
       console.log("/sample/treeList", result);
       if (result.code != "S0000001" || result.dataSet.length < 1) {
-        messageApi.open({
-          type: "error",
-          content: "조회된 정보가 없습니다.",
-        });
         return;
       }
+
       setTreeData(arrayToTree(result.dataSet, "root", false));
     });
   };
@@ -76,23 +65,17 @@ const CellPop = forwardRef<any, any>((props) => {
       type: form.getFieldValue("type"),
       code: selectedCode,
     };
-
-    refCellClickdNode.current.node.setDataValue(
-      refCellClickdNode.current.column.colId,
-      JSON.stringify(result)
-    );
-
-    setModalOpen(false);
+    handleModalResult(result);
   };
 
   const handleCancel = () => {
-    setModalOpen(false);
+    handleModalResult();
   };
 
   return (
     <Modal
-      title={modalTitle}
-      open={modalOpen}
+      title={title}
+      open={open}
       onOk={handleOk}
       onCancel={handleCancel}
       width={500}
@@ -123,12 +106,10 @@ const CellPop = forwardRef<any, any>((props) => {
         </Form.Item>
         <Form.Item name="code" label="공통코드">
           <TreeSelect
-            ref={treeSelectRef}
             disabled={treeSelectEnable}
             showSearch
             style={{ width: "100%" }}
             onSelect={onSelect}
-            // value={value}
             dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
             placeholder="Please select"
             treeData={treeData}
