@@ -148,11 +148,12 @@ const Grid = forwardRef<any, any>((props, ref) => {
   const [columnDefs, setColumnDefs] = useState<ColDef<any>[]>([
     {
       field: "CRUD_FLAG",
-      headerName: "",
+      headerName: "CRUD",
       maxWidth: 5,
       cellStyle: crudStyle,
       resizable: false,
     },
+    { field: "P_CODE_CD", headerName: "부모코드", hide: true },
     {
       field: "P_CODE_NM",
       headerName: i18n.t("classification"),
@@ -161,9 +162,8 @@ const Grid = forwardRef<any, any>((props, ref) => {
     },
     { field: "CODE_CD", headerName: "코드", minWidth: 120, flex: 1 },
     { field: "CODE_NM", headerName: "코드명", minWidth: 120, flex: 1 },
-    { field: "CODE_LVL", hide: true },
-    { field: "P_CODE_CD", hide: true },
-    { field: "DSP_ORDER", headerName: "", hide: true },
+    { field: "CODE_LVL", headerName: "레벨", hide: true },
+    { field: "DSP_ORDER", headerName: "정렬순서", hide: true },
     {
       field: "USE_YN",
       headerName: "사용",
@@ -292,6 +292,34 @@ const Grid = forwardRef<any, any>((props, ref) => {
   const buttonListener = useCallback((e) => {
     console.log("버튼:", e);
   }, []);
+
+  const handleBtnDown = (e) => {
+    gridRef.current.api.exportDataAsExcel({
+      fileName: `공통코드_${dayjs().format("YYYYMMDD hhmmss")}.xlsx`,
+      columnKeys: [
+        "CRUD_FLAG",
+        "P_CODE_CD",
+        "P_CODE_NM",
+        "CODE_CD",
+        "CODE_NM",
+        "CODE_LVL",
+        "DSP_ORDER",
+        "USE_YN",
+        "EXP_FR_DT",
+        "EXP_TO_DT",
+        "ATTR1_VAL",
+        "ATTR2_VAL",
+        "ATTR3_VAL",
+        "ATTR4_VAL",
+        "ATTR5_VAL",
+        "ATTR6_VAL",
+        "ATTR7_VAL",
+        "ATTR8_VAL",
+        "ATTR9_VAL",
+        "ATTR10_VAL",
+      ],
+    });
+  };
 
   const handleBtnAdd = (e) => {
     if (refSelectedNode?.current == undefined) {
@@ -568,7 +596,7 @@ const Grid = forwardRef<any, any>((props, ref) => {
           >
             엑셀 업로드
           </Button>
-          <Button size={"small"} style={{ width: 90 }} onClick={buttonListener}>
+          <Button size={"small"} style={{ width: 90 }} onClick={handleBtnDown}>
             엑셀 다운로드
           </Button>
           <Button size={"small"} style={{ width: 60 }} onClick={handleBtnAdd}>
