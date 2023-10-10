@@ -189,6 +189,16 @@ const Grid = forwardRef<any, any>((props, ref) => {
       cellRendererParams: { range: true, format: "YYYY-MM-DD" },
     },
     {
+      field: "EXP_FR_DT",
+      headerName: "시작일",
+      hide: true,
+    },
+    {
+      field: "EXP_TO_DT",
+      headerName: "종료일",
+      hide: true,
+    },
+    {
       field: "ATTR1_JSON",
       headerName: "속성1 명",
       minWidth: 80,
@@ -287,16 +297,10 @@ const Grid = forwardRef<any, any>((props, ref) => {
     }
   };
 
-  // Example using Grid's API
-  const buttonListener = useCallback((e) => {
-    console.log("버튼:", e);
-  }, []);
-
   const handleBtnDown = (e) => {
     gridRef.current.api.exportDataAsExcel({
-      fileName: `공통코드_${dayjs().format("YYYYMMDD hhmmss")}.xlsx`,
+      fileName: `공통코드_${dayjs().format("YYYYMMDD HHmmss")}.xlsx`,
       columnKeys: [
-        "CRUD_FLAG",
         "P_CODE_CD",
         "P_CODE_NM",
         "CODE_CD",
@@ -562,7 +566,9 @@ const Grid = forwardRef<any, any>((props, ref) => {
 
       // 셀 데이터를 파싱하여 출력
       const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-      const rowData = xlsJsonToRowData(jsonData, columnDefs);
+      const rowData = xlsJsonToRowData(jsonData, columnDefs).map(
+        (data) => (data = { ...data, PERIOD: [data.EXP_FR_DT, data.EXP_TO_DT] })
+      );
 
       console.log("handleFileUpload:", rowData);
 
