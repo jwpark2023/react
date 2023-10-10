@@ -8,9 +8,9 @@ import React, {
 } from "react";
 import { AgGridReact } from "ag-grid-react"; // the AG Grid React Component
 
-import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
-import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
-import { ColDef } from "ag-grid-community";
+import "ag-grid-enterprise/styles/ag-grid.css"; // Core grid CSS, always needed
+import "ag-grid-enterprise/styles/ag-theme-alpine.css"; // Optional theme CSS
+import { ColDef } from "ag-grid-enterprise";
 import ButtonForGrid from "src/component/Grid/ButtonForGrid";
 import CheckBoxForGrid from "src/component/Grid/CheckBoxForGrid";
 import DatePickerForGrid from "src/component/Grid/DatePickerForGrid";

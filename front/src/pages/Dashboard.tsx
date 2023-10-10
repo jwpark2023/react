@@ -1,12 +1,7 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useMemo
-} from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 
-import { ColDef, ColumnApi } from "ag-grid-community";
-import dayjs from 'dayjs';
+import { ColDef, ColumnApi } from "ag-grid-enterprise";
+import dayjs from "dayjs";
 import { Button } from "antd";
 
 const CMMGrid = React.lazy(() => import("src/component/Grid/CMMGrid"));
@@ -19,80 +14,71 @@ const Dashboard = () => {
     total: string;
   }
 
-  const [rowData, setrowData] = useState<any>([]); 
+  const [rowData, setrowData] = useState<any>([]);
   const [allFlag, setallFlage] = useState<any>([]);
 
   useEffect(() => {
-    fetch('https://www.ag-grid.com/example-assets/small-olympic-winners.json')
+    fetch("https://www.ag-grid.com/example-assets/small-olympic-winners.json")
       .then((resp) => resp.json())
       .then((data) => {
         // console.log(data);
         setrowData(data);
-        
       });
   }, []);
 
   useEffect(() => {
     // console.log(allFlag);
 
-    if(allFlag)
-    {
-
+    if (allFlag) {
     }
-
   }, [allFlag]);
 
   const [columnDefs, setColumnDefs] = useState<ColDef<ICode>[]>([
-    { 
-      field: "chk" , 
-      cellRenderer : 'checkboxrenderer',
+    {
+      field: "chk",
+      cellRenderer: "checkboxrenderer",
       // headerCheckboxSelection : true,
       // checkboxSelection : true,
-      headerComponent : 'checkboxrenderer',
-      headerComponentParams : {
-        setallFlage : setallFlage
-      }
+      headerComponent: "checkboxrenderer",
+      headerComponentParams: {
+        setallFlage: setallFlage,
+      },
     },
-    { field: "year", 
+    {
+      field: "year",
       minWidth: 50,
-      filter: 'agNumberColumnFilter',
+      filter: "agNumberColumnFilter",
       // cellRenderer : 'imagerenderer',
       // cellRendererParams : {
       //   src : "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
       // }
     },
     {
-      field: 'date',
+      field: "date",
       minWidth: 200,
-      cellRenderer : 'datepickerrenderer',
+      cellRenderer: "datepickerrenderer",
       cellRendererParams: {
-        range : true,
-        defaultValue: dayjs('2015/01/01', 'YYYY/MM/DD'),
-        format : 'YYYY/MM/DD'
+        range: true,
+        defaultValue: dayjs("2015/01/01", "YYYY/MM/DD"),
+        format: "YYYY/MM/DD",
       },
-      filter: 'agDateColumnFilter',
+      filter: "agDateColumnFilter",
       // filterParams: 'filterParams',
     },
-    { 
-      field: "total", 
-      minWidth: 175 , 
-      cellRenderer : 'buttonrenderer', 
+    {
+      field: "total",
+      minWidth: 175,
+      cellRenderer: "buttonrenderer",
       cellRendererParams: {
-        test: 'guinnessBlack',
-        clicked: function(field: any) {
-          
-        }
-      }
-    }
+        test: "guinnessBlack",
+        clicked: function (field: any) {},
+      },
+    },
   ]);
 
-  const onGridReady = useCallback((params) => {
-   
-  }, []);
+  const onGridReady = useCallback((params) => {}, []);
 
-  const cellClickedListener = useCallback((event) => {
-    
-  }, []);
+  const cellClickedListener = useCallback((event) => {}, []);
 
   const defaultColDef = useMemo(() => {
     return {
@@ -108,7 +94,7 @@ const Dashboard = () => {
 
   const click = () => {
     console.log(rowData);
-  }
+  };
 
   return (
     // <>{JSON.stringify(rowdatas)}</>
@@ -117,7 +103,13 @@ const Dashboard = () => {
         <Button onClick={click}>test</Button>
       </div> */}
       <div>
-        <CMMGrid  rowData={rowData} columnDefs={columnDefs} onGridReady={onGridReady} cellClickedListener={cellClickedListener} defaultColDef={defaultColDef} />
+        <CMMGrid
+          rowData={rowData}
+          columnDefs={columnDefs}
+          onGridReady={onGridReady}
+          cellClickedListener={cellClickedListener}
+          defaultColDef={defaultColDef}
+        />
       </div>
     </div>
   );

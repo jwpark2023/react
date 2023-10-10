@@ -1,9 +1,9 @@
 // import { AgGridReact } from "ag-grid-react"; // the AG Grid React Component
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { ColDef } from "ag-grid-community";
-import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
-import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
+import { ColDef } from "ag-grid-enterprise";
+import "ag-grid-enterprise/styles/ag-grid.css"; // Core grid CSS, always needed
+import "ag-grid-enterprise/styles/ag-theme-alpine.css"; // Optional theme CSS
 
 import { request } from "src/utils/axios";
 

@@ -8,9 +8,9 @@ import {
   useState,
 } from "react";
 
-import { ColDef, RowNode } from "ag-grid-community";
-import "ag-grid-community/styles/ag-grid.css"; // Core grid CSS, always needed
-import "ag-grid-community/styles/ag-theme-alpine.css"; // Optional theme CSS
+import { ColDef, RowNode } from "ag-grid-enterprise";
+import "ag-grid-enterprise/styles/ag-grid.css"; // Core grid CSS, always needed
+import "ag-grid-enterprise/styles/ag-theme-alpine.css"; // Optional theme CSS
 
 import CMMGrid from "src/component/Grid/CMMGrid";
 import { request } from "src/utils/axios";
@@ -19,7 +19,6 @@ import { Button, Checkbox, Form } from "antd";
 import dayjs from "dayjs";
 import i18n from "src/config/i18n";
 import * as XLSX from "xlsx";
-
 
 const dateFormat = "YYYY-MM-DD";
 
