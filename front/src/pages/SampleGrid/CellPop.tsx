@@ -19,6 +19,7 @@ const CellPop = forwardRef<any, any>((props) => {
   const { Option } = Select;
   const [inpuValue, setInputValue] = useState("");
   const [treeData, setTreeData] = useState([]);
+  const [selectedCode, setSelectedCode] = useState("");
   const [treeSelectEnable, setTreeSelectEnable] = useState(false);
 
   const initFormValues = () => {
@@ -65,11 +66,15 @@ const CellPop = forwardRef<any, any>((props) => {
     value === "Select" ? setTreeSelectEnable(false) : setTreeSelectEnable(true);
   };
 
+  const onSelect = (value, node) => {
+    setSelectedCode(node.CODE_CD);
+  };
+
   const handleOk = () => {
     let result = {
       name: form.getFieldValue("name"),
       type: form.getFieldValue("type"),
-      code: form.getFieldValue("code"),
+      code: selectedCode,
     };
 
     refCellClickdNode.current.node.setDataValue(
@@ -122,6 +127,7 @@ const CellPop = forwardRef<any, any>((props) => {
             disabled={treeSelectEnable}
             showSearch
             style={{ width: "100%" }}
+            onSelect={onSelect}
             // value={value}
             dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
             placeholder="Please select"

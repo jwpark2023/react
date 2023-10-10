@@ -272,7 +272,6 @@ const Grid = forwardRef<any, any>((props, ref) => {
   const cellClickedListener = (e) => {
     props.refCellClickdNode.current = e;
 
-    console.log("e", e.column);
     if (e.column.colId.includes("JSON")) {
       if (e.value !== undefined) {
         setModalNameValue(JSON.parse(e.value).name);
@@ -418,6 +417,7 @@ const Grid = forwardRef<any, any>((props, ref) => {
   };
 
   const getOptionList = async (code) => {
+    console.log(code);
     let options = [];
     await request("post", "/sample/codeList", { P_CODE_CD: code }).then(
       (result) => {
@@ -431,7 +431,7 @@ const Grid = forwardRef<any, any>((props, ref) => {
         }));
       }
     );
-
+    console.log("option", options);
     return options;
   };
 
@@ -445,7 +445,11 @@ const Grid = forwardRef<any, any>((props, ref) => {
         colDef.hide = true;
         colDef.cellRenderer = undefined;
 
+        // console.log("node", node);
+
         const colHeaderInfo = node[colId.replace("_VAL", "_JSON")];
+
+        console.log("colHeaderInfo", colHeaderInfo);
         if (colHeaderInfo) {
           colDef.hide = false;
           const hInfo = JSON.parse(colHeaderInfo);
@@ -456,6 +460,7 @@ const Grid = forwardRef<any, any>((props, ref) => {
               colDef.cellRenderer = "checkboxrenderer";
               break;
             case "Select":
+              console.log("select?");
               colDef.cellRenderer = "selectboxrenderer";
               colDef.cellRendererParams = {
                 options: await getOptionList(hInfo.code),
